@@ -6,6 +6,7 @@ import (
 	"rehabilitation_prescription/pkg/setting"
 
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql" // to remember driver's import path重要，没有会找不到driver "mysql" 导致panic
 )
 
 var db *gorm.DB
@@ -33,14 +34,14 @@ func init() {
 	tablePrefix = sec.Key("TABLE_PREFIX").String()
 
 	// 创建db，user:password@tcp(host)/dbName
-	db, err = gorm.Open(dbType, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=local",
+	db, err = gorm.Open(dbType, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		user,
 		password,
 		host,
 		dbName,
 	))
 	if err != nil {
-		log.Println(err)
+		log.Printf("%v-----", err)
 	}
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {

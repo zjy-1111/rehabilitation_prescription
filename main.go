@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"rehabilitation-training/pkg/setting"
-	"rehabilitation-training/routers"
+	"rehabilitation_prescription/pkg/setting"
+	"rehabilitation_prescription/routers"
 )
 
 func main() {

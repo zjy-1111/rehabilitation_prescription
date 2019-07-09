@@ -2,6 +2,7 @@ package routers
 
 import (
 	"rehabilitation_prescription/pkg/setting"
+	"rehabilitation_prescription/routers/handlers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +21,7 @@ func InitRouter() *gin.Engine {
 			"message": "hello world!",
 		})
 	})
+	r.GET("/auth", handlers.GetAuth)
 
 	return r
 }
