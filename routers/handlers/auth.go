@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"rehabilitation_prescription/models"
 	"rehabilitation_prescription/pkg/e"
+	"rehabilitation_prescription/pkg/logging"
 	"rehabilitation_prescription/util"
 
 	"github.com/astaxie/beego/validation"
@@ -42,7 +42,7 @@ func GetAuth(c *gin.Context) {
 		}
 	} else {
 		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
+			logging.Info(err.Key, err.Message)
 		}
 	}
 
