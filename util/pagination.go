@@ -1,7 +1,7 @@
 package util
 
 import (
-	"gin-blog/pkg/setting"
+	"rehabilitation_prescription/pkg/setting"
 
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
