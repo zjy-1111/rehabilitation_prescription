@@ -5,6 +5,10 @@ import (
 	"rehabilitation_prescription/routers/handlers"
 
 	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+
+	_ "rehabilitation_prescription/docs"
 )
 
 func InitRouter() *gin.Engine {
@@ -13,7 +17,7 @@ func InitRouter() *gin.Engine {
 	// r.Use(gin.Recovery())
 	r := gin.Default()
 
-	gin.SetMode(setting.RunMode)
+	gin.SetMode(setting.ServerSetting.RunMode)
 
 	r.GET("/hello", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -22,6 +26,8 @@ func InitRouter() *gin.Engine {
 		})
 	})
 	r.GET("/auth", handlers.GetAuth)
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

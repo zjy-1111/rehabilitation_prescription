@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/EDDYCJY/go-gin-example/pkg/file"
 )
 
 type Level int
@@ -27,11 +29,16 @@ const (
 	FATAL
 )
 
-func init() {
-	filePath := getLogFileFullPath()
-	F = openLogFile(filePath)
+func InitLogger() {
+	var err error
+	filePath := getLogFilePath()
+	fileName := getLogFileName()
+	F, err = file.MustOpen(fileName, filePath)
+	if err != nil {
+		log.Fatalf("logging.InitLogger err: %v", err)
+	}
 
-	logger = log.New(F, DefaultPrefix, log.LstdFlags) // 创建日志记录器
+	logger = log.New(F, DefaultPrefix, log.LstdFlags)
 }
 
 func setPrefix(l Level) {

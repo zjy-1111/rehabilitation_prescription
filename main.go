@@ -7,19 +7,29 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"rehabilitation_prescription/models"
+	"rehabilitation_prescription/pkg/logging"
 	"rehabilitation_prescription/pkg/setting"
 	"rehabilitation_prescription/routers"
+	"rehabilitation_prescription/util"
 	"time"
 )
+
+func init() {
+	setting.InitConf()
+	models.InitDB()
+	logging.InitLogger()
+	util.InitUtil()
+}
 
 func main() {
 	r := routers.InitRouter()
 
 	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HttpPort),
 		Handler:        r,
-		ReadTimeout:    setting.ReadTimeout,
-		WriteTimeout:   setting.WriteTimeout,
+		ReadTimeout:    setting.ServerSetting.ReadTimeout,
+		WriteTimeout:   setting.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 
