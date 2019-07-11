@@ -2,8 +2,7 @@ package routers
 
 import (
 	"rehabilitation_prescription/pkg/setting"
-	"rehabilitation_prescription/routers/handlers"
-
+	"rehabilitation_prescription/routers/api"
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -25,9 +24,11 @@ func InitRouter() *gin.Engine {
 			"message": "hello world!",
 		})
 	})
-	r.GET("/auth", handlers.GetAuth)
+	r.GET("/auth", api.GetAuth)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	
 
 	return r
 }

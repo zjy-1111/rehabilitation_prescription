@@ -5,7 +5,6 @@
 ```
 CREATE TABLE `reservation` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(100) DEFAULT '' COMMENT '用户名称’,
   `time` int(10) unsigned NOT NULL COMMENT ‘预约时间’,
   `doctor_name` varchar(100) DEFAULT '' COMMENT ‘预约医生’,
   `address` varchar(100) DEFAULT '' COMMENT ‘预约地点’,
