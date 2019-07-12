@@ -10,8 +10,9 @@ import (
 type Reservation struct {
 	ID         int
 	Name       string
-	Time       int
-	DoctorName string
+	Date       int
+	PeriodID   int
+	DoctorID   int
 	Address    string
 	CreatedBy  string
 	ModifiedBy string
@@ -28,6 +29,15 @@ func (r *Reservation) GetReservationKey() string {
 
 	if r.Name != "" {
 		keys = append(keys, r.Name)
+	}
+	if r.Date != 0 {
+		keys = append(keys, strconv.Itoa(r.Date))
+	}
+	if r.DoctorID != 0 {
+		keys = append(keys, strconv.Itoa(r.DoctorID))
+	}
+	if r.CreatedBy != "" {
+		keys = append(keys, r.CreatedBy)
 	}
 	if r.PageNum > 0 {
 		keys = append(keys, strconv.Itoa(r.PageNum))

@@ -8,8 +8,6 @@ import (
 	"rehabilitation_prescription/services/reservation_service"
 	"rehabilitation_prescription/util"
 
-	"github.com/golang/protobuf/ptypes/timestamp"
-
 	"github.com/astaxie/beego/validation"
 
 	"github.com/Unknwon/com"
@@ -18,22 +16,23 @@ import (
 )
 
 func GetReservations(c *gin.Context) {
-	name := c.Query("name")
-
-	reservation_service := reservation_service.Reservation{
-		Name:     name,
-		PageNum:  util.GetPage(c),
-		PageSize: setting.AppSetting.PageSize,
+	reservationService := reservation_service.Reservation{
+		Name:      c.PostForm("name"),
+		Date:      com.StrTo(c.PostForm("Date")).MustInt(),
+		DoctorID:  com.StrTo(c.PostForm("doctor_id")).MustInt(),
+		CreatedBy: c.PostForm("created_by"),
+		PageNum:   util.GetPage(c),
+		PageSize:  setting.AppSetting.PageSize,
 	}
 
 	appG := app.Gin{c}
-	reservations, err := reservation_service.GetAll()
+	reservations, err := reservationService.GetAll()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_GET_RESERVATIONS_FAIL, nil)
 		return
 	}
 
-	count, err := reservation_service.Count()
+	count, err := reservationService.Count()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_COUNT_RESERVATION_FAIL, nil)
 		return
@@ -46,11 +45,12 @@ func GetReservations(c *gin.Context) {
 }
 
 type AddReservationForm struct {
-	Name       string `form:"name" valid:"Required;MaxSize(100)"`
-	Time       int    `form:"time" valid:"Required;MaxSize(10)"`
-	DoctorName string `form:"doctor_name" valid:"Required;MaxSize(100)"`
-	Address    string `form:"address" valid:"Required;MaxSize(100)"`
-	CreatedBy  string `form:"created_by" valid:"Required;MaxSize(100)"`
+	Name      string `form:"name" valid:"Required;MaxSize(100)"`
+	Date      int    `form:"date" valid:"Required;Min(1)"`
+	PeriodID  int    `form:"period_id" valid:"Required;Min(1)"`
+	DoctorID  int    `form:"doctor_id" valid:"Required;Min(1)"`
+	Address   string `form:"address" valid:"Required;MaxSize(100)"`
+	CreatedBy string `form:"created_by" valid:"Required;MaxSize(100)"`
 }
 
 func AddReservation(c *gin.Context) {
@@ -66,11 +66,12 @@ func AddReservation(c *gin.Context) {
 	}
 
 	reservationService := reservation_service.Reservation{
-		Name:       form.Name,
-		Time:       form.Time,
-		Address:    form.Address,
-		DoctorName: form.DoctorName,
-		CreatedBy:  form.CreatedBy,
+		Name:      form.Name,
+		Date:      form.Date,
+		PeriodID:  form.PeriodID,
+		Address:   form.Address,
+		DoctorID:  form.DoctorID,
+		CreatedBy: form.CreatedBy,
 	}
 
 	// 是否一个人可以预约多个
@@ -94,16 +95,15 @@ func AddReservation(c *gin.Context) {
 }
 
 type EditReservationForm struct {
-	ID         int    `form:"id" valid:"Required;Min(1)"`
-	Name       string `form:"name" valid:"Required;MaxSize(100)"`
-	Times      timestamp.Timestamp
-	Time       int    `form:"time" valid:"Required;MaxSize(10)"`
-	DoctorName string `form:"doctor_name" valid:"Required;MaxSize(100)"`
-	Address    string `form:"address" valid:"Required;MaxSize(100)"`
-	ModifiedBy string `form:"modified_by" valid:"Required;MaxSize(100)"`
+	ID       int    `form:"id" valid:"Required;Min(1)"`
+	Name     string `form:"name" valid:"Required;MaxSize(100)"`
+	Date     int    `form:"date" valid:"Required;Min(1)"`
+	PeriodID int    `form:"period_id" valid:"Required;Min(1)"`
+	DoctorID int    `form:"doctor_id" valid:"Required;Min(1)"`
+	Address  string `form:"address" valid:"Required;MaxSize(100)"`
 }
 
-func EditTag(c *gin.Context) {
+func EditReservation(c *gin.Context) {
 	var (
 		appG = app.Gin{C: c}
 		form = EditReservationForm{ID: com.StrTo(c.Param("id")).MustInt()}
@@ -116,12 +116,12 @@ func EditTag(c *gin.Context) {
 	}
 
 	reservationService := reservation_service.Reservation{
-		ID:         form.ID,
-		Name:       form.Name,
-		Time:       form.Time,
-		Address:    form.Address,
-		DoctorName: form.DoctorName,
-		ModifiedBy: form.ModifiedBy,
+		ID:       form.ID,
+		Name:     form.Name,
+		Date:     form.Date,
+		PeriodID: form.PeriodID,
+		Address:  form.Address,
+		DoctorID: form.DoctorID,
 	}
 
 	exists, err := reservationService.ExistByID()
@@ -147,12 +147,13 @@ func EditTag(c *gin.Context) {
 func DeleteReservation(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
-	id := com.StrTo(c.Param("id")).MustInt()
+	id := com.StrTo(c.Query("id")).MustInt()
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
 		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
 	}
 
 	reservationService := reservation_service.Reservation{ID: id}

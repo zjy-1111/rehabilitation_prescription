@@ -6,17 +6,18 @@ import (
 
 type Reservation struct {
 	Model
-	Name       string `json:"name"`
-	Time       int    `json:"time"`
-	DoctorName string `json:"doctor_name"`
-	Address    string `json:"address"`
-	CreatedBy  string `json:"created_by"`
+	Name      string `json:"name"`
+	Date      int    `json:"date"`
+	PeriodID  int    `json:"period_id"`
+	DoctorID  int    `json:"doctor_id"`
+	Address   string `json:"address"`
+	CreatedBy string `json:"created_by"`
 }
 
-// ExistReservationByID checks if an article exists based on ID
+// ExistReservationByID checks if an Reservation exists based on ID
 func ExistReservationByID(id int) (bool, error) {
 	var reserv Reservation
-	err := db.Select("id").Where("id = ?", id).First(&reserv).Error
+	err := db.Select("id").Where("id = ? AND deleted_on = ?", id, 0).First(&reserv).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
 	}
@@ -29,13 +30,14 @@ func ExistReservationByID(id int) (bool, error) {
 }
 
 // AddReservation Add a reservation
-func AddReservation(t int, name, doctorName, addr, createdBy string) error {
+func AddReservation(date, p, doctorID int, name, addr, createdBy string) error {
 	reserv := Reservation{
-		Name:       name,
-		Time:       t,
-		DoctorName: doctorName,
-		Address:    addr,
-		CreatedBy:  createdBy,
+		Name:      name,
+		Date:      date,
+		PeriodID:  p,
+		DoctorID:  doctorID,
+		Address:   addr,
+		CreatedBy: createdBy,
 	}
 
 	if err := db.Create(&reserv).Error; err != nil {
@@ -53,7 +55,7 @@ func GetReservations(pageNum, pageSize int, maps interface{}) ([]Reservation, er
 	)
 
 	if pageSize > 0 && pageNum > 0 {
-		err = db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&reservations).Error
+		err = db.Where(maps).Find(&reservations).Offset(pageNum).Limit(pageSize).Error
 	} else {
 		err = db.Where(maps).Find(&reservations).Error
 	}
@@ -85,7 +87,7 @@ func DeleteReservation(id int) error {
 
 // EditReservation modify a single reservation
 func EditReservation(id int, data interface{}) error {
-	if err := db.Model(&Reservation{}).Where("id = ? AND deleted_on = ? ", id, 0).Updates(data).Error; err != nil {
+	if err := db.Model(&Reservation{}).Where("id = ? AND deleted_on = ?", id, 0).Updates(data).Error; err != nil {
 		return err
 	}
 

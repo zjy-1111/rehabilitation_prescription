@@ -35,7 +35,7 @@ func GenerateToken(username, password string) (string, error) {
 
 // 解析token字符串
 func ParseToken(token string) (*Claims, error) {
-	tokenClaims, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
 	})
 
