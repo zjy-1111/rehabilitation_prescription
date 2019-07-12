@@ -1,13 +1,7 @@
 package reservation_service
 
 import (
-	"encoding/json"
-	"fmt"
 	"rehabilitation_prescription/models"
-	"rehabilitation_prescription/pkg/gredis"
-	"rehabilitation_prescription/pkg/logging"
-
-	"rehabilitation_prescription/services/cache_service"
 )
 
 type Reservation struct {
@@ -51,35 +45,35 @@ func (r *Reservation) Count() (int, error) {
 
 func (r *Reservation) GetAll() ([]models.Reservation, error) {
 	var (
-		reservations, cacheReservations []models.Reservation
+		reservations []models.Reservation
+		// cacheReservations []models.Reservation
 	)
 
-	cache := cache_service.Reservation{
-		Name:      r.Name,
-		Date:      r.Date,
-		DoctorID:  r.DoctorID,
-		CreatedBy: r.CreatedBy,
-		PageNum:   r.PageNum,
-		PageSize:  r.PageSize,
-	}
-	key := cache.GetReservationKey()
-	if gredis.Exists(key) {
-		data, err := gredis.Get(key)
-		if err != nil {
-			logging.Info(err)
-		} else {
-			json.Unmarshal(data, &cacheReservations)
-			return cacheReservations, nil
-		}
-	}
+	//cache := cache_service.Reservation{
+	//	Name:      r.Name,
+	//	Date:      r.Date,
+	//	DoctorID:  r.DoctorID,
+	//	CreatedBy: r.CreatedBy,
+	//	PageNum:   r.PageNum,
+	//	PageSize:  r.PageSize,
+	//}
+	//key := cache.GetReservationKey()
+	//if gredis.Exists(key) {
+	//	data, err := gredis.Get(key)
+	//	if err != nil {
+	//		logging.Info(err)
+	//	} else {
+	//		json.Unmarshal(data, &cacheReservations)
+	//		return cacheReservations, nil
+	//	}
+	//}
 
 	reservations, err := models.GetReservations(r.PageNum, r.PageSize, r.getMaps())
-	fmt.Println(reservations)
 	if err != nil {
 		return nil, err
 	}
 
-	gredis.Set(key, reservations, 3600)
+	//gredis.Set(key, reservations, 3600)
 	return reservations, nil
 }
 
