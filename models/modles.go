@@ -54,7 +54,7 @@ func updateTimestampForCreateCallback(scope *gorm.Scope) {
 			}
 		}
 
-		if modifyOn, ok := scope.FieldByName("ModifyOn"); ok {
+		if modifyOn, ok := scope.FieldByName("ModifiedOn"); ok {
 			if modifyOn.IsBlank {
 				modifyOn.Set(nowTime)
 			}

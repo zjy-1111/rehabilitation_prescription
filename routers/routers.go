@@ -35,10 +35,10 @@ func InitRouter() *gin.Engine {
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(jwt.JWT())
 	{
-		apiv1.GET("/reservation", v1.GetReservations)
-		apiv1.POST("/reservation", v1.AddReservation)
-		apiv1.PUT("/reservation", v1.EditReservation)
-		apiv1.DELETE("/reservation", v1.DeleteReservation)
+		apiv1.GET("/appoint", v1.GetPatients)
+		apiv1.POST("/appoint", v1.AddAppointment)
+		apiv1.PUT("/appoint/:id", v1.EditAppointment)
+		apiv1.DELETE("/appoint/:id", v1.DeleteAppointment)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
