@@ -16,36 +16,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AppointmentForm struct {
-	ID        int `form:"id"`
-	DoctorID  int `form:"doctor_id"`
-	PatientID int `form:"patient_id"`
-}
-
 func GetPatients(c *gin.Context) {
-	form := AppointmentForm{}
+	valid := validation.Validation{}
 
-	httpCode, errCode := app.BindAndValid(c, &form)
-	if errCode != e.SUCCESS {
-		app.Response(c, httpCode, errCode, nil)
+	doctorID := -1
+	if arg := c.PostForm("doctor_id"); arg != "" {
+		doctorID = com.StrTo(arg).MustInt()
+		valid.Min(doctorID, 1, "doctor_id")
+	}
+
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		app.Response(c, http.StatusBadRequest, e.INVALID_PARAMS, nil)
 		return
 	}
 
 	authService := auth_service.Auth{
-		ID:       form.DoctorID,
+		ID:       doctorID,
 		UserType: 2,
 	}
 	checkValidAuth(c, authService)
 
 	appointService := appoint_service.Appointment{
-		DoctorID: form.DoctorID,
+		DoctorID: doctorID,
 		PageNum:  util.GetPage(c),
 		PageSize: setting.AppSetting.PageSize,
 	}
 
 	total, err := appointService.Count()
 	if err != nil {
-		app.Response(c, http.StatusInternalServerError, e.ERROR_COUNT_PATIEN_FAIL, nil)
+		app.Response(c, http.StatusInternalServerError, e.ERROR_COUNT_PATIENT_FAIL, nil)
 		return
 	}
 
@@ -61,8 +61,14 @@ func GetPatients(c *gin.Context) {
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
 
+type AddAppointmentForm struct {
+	ID        int `form:"id" valid:"Required;Min(1)"`
+	DoctorID  int `form:"doctor_id" valid:"Required;Min(1)"`
+	PatientID int `form:"patient_id" valid:"Required;Min(1)"`
+}
+
 func AddAppointment(c *gin.Context) {
-	form := AppointmentForm{}
+	form := AddAppointmentForm{}
 
 	httpCode, errCode := app.BindAndValid(c, &form)
 	if errCode != e.SUCCESS {
@@ -94,8 +100,14 @@ func AddAppointment(c *gin.Context) {
 	app.Response(c, http.StatusOK, e.SUCCESS, nil)
 }
 
+type EditAppointmentForm struct {
+	ID        int `form:"id" valid:"Required;Min(1)"`
+	DoctorID  int `form:"doctor_id" valid:"Required;Min(1)"`
+	PatientID int `form:"patient_id" valid:"Required;Min(1)"`
+}
+
 func EditAppointment(c *gin.Context) {
-	form := AppointmentForm{ID: com.StrTo(c.Param("id")).MustInt()}
+	form := EditAppointmentForm{ID: com.StrTo(c.Param("id")).MustInt()}
 
 	httpCode, errCode := app.BindAndValid(c, &form)
 	if errCode != e.SUCCESS {
@@ -138,7 +150,7 @@ func EditAppointment(c *gin.Context) {
 	app.Response(c, http.StatusOK, e.SUCCESS, nil)
 }
 
-func DeleteAppointment(c *gin.Context) {
+func DelAppointment(c *gin.Context) {
 	valid := validation.Validation{}
 	id := com.StrTo(c.Param("id")).MustInt()
 	valid.Min(id, 1, "id").Message("ID必须大于0")
