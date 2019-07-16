@@ -54,6 +54,11 @@ func InitRouter() *gin.Engine {
 		apiv1.POST("/report_prescription", v1.AddReportPrescription)
 		apiv1.PUT("/report_prescription/:id", v1.EditReportPrescription)
 		apiv1.DELETE("/report_prescription/:id", v1.DelReportPrescription)
+
+		apiv1.GET("/training_video", v1.GetTrainingVideos)
+		apiv1.POST("/training_video", v1.AddTrainingVideo)
+		apiv1.PUT("/training_video/:id", v1.EditTrainingVideo)
+		apiv1.DELETE("/training_video/:id", v1.DelTrainingVideo)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
