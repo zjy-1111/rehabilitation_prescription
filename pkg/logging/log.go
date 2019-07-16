@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/EDDYCJY/go-gin-example/pkg/file"
+	"rehabilitation_prescription/pkg/file"
 )
 
 type Level int

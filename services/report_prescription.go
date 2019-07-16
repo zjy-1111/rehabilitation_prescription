@@ -1,6 +1,6 @@
 package services
 
-import "rehabilitation_Prescription/models"
+import "rehabilitation_prescription/models"
 
 type ReportPrescription struct {
 	ID              int

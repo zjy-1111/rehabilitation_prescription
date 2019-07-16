@@ -124,6 +124,12 @@
 			"revisionTime": "2019-05-17T06:12:10Z"
 		},
 		{
+			"checksumSHA1": "29SMun24tC5a7pMCmb9Ay8RP1ic=",
+			"path": "github.com/gomodule/redigo/redis",
+			"revision": "39e2c31b7ca38b521ceb836620a269e62c895dc9",
+			"revisionTime": "2019-03-22T06:41:13Z"
+		},
+		{
 			"checksumSHA1": "YzIVWHj5vDlCp3A8Zy0vhCn4zZ0=",
 			"path": "github.com/jinzhu/gorm",
 			"revision": "836fb2c19d84dac7b0272958dfb9af7cf0d0ade4",
