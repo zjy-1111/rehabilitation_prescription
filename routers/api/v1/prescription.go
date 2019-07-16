@@ -5,8 +5,7 @@ import (
 	"rehabilitation_prescription/pkg/app"
 	"rehabilitation_prescription/pkg/e"
 	"rehabilitation_prescription/pkg/setting"
-	"rehabilitation_prescription/services/auth_service"
-	"rehabilitation_prescription/services/prescription_service"
+	"rehabilitation_prescription/services"
 	"rehabilitation_prescription/util"
 
 	"github.com/astaxie/beego/validation"
@@ -31,13 +30,13 @@ func GetPrescriptions(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		ID:       doctorID,
 		UserType: 2,
 	}
 	checkValidAuth(c, authService)
 
-	prescriptionService := prescription_service.Prescription{
+	prescriptionService := services.Prescription{
 		DoctorID: doctorID,
 		PageNum:  util.GetPage(c),
 		PageSize: setting.AppSetting.PageSize,
@@ -45,13 +44,13 @@ func GetPrescriptions(c *gin.Context) {
 
 	total, err := prescriptionService.Count()
 	if err != nil {
-		app.Response(c, http.StatusInternalServerError, e.ERROR_COUNT_PATIENT_FAIL, nil)
+		app.Response(c, http.StatusInternalServerError, e.ERROR_COUNT_PRESCRIPTION_FAIL, nil)
 		return
 	}
 
 	prescriptions, err := prescriptionService.Get()
 	if err != nil {
-		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_PATIENTS_FAIL, nil)
+		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_PRESCRIPTIONS_FAIL, nil)
 		return
 	}
 
@@ -75,13 +74,13 @@ func AddPrescription(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		ID:       form.DoctorID,
 		UserType: 2,
 	}
 	checkValidAuth(c, authService)
 
-	prescriptionService := prescription_service.Prescription{
+	prescriptionService := services.Prescription{
 		DoctorID: form.DoctorID,
 		Desc:     form.Desc,
 	}
@@ -109,13 +108,13 @@ func EditPrescription(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		ID:       form.DoctorID,
 		UserType: 2,
 	}
 	checkValidAuth(c, authService)
 
-	prescriptionService := prescription_service.Prescription{
+	prescriptionService := services.Prescription{
 		ID:       form.ID,
 		DoctorID: form.DoctorID,
 		Desc:     form.Desc,
@@ -150,7 +149,7 @@ func DelPrescription(c *gin.Context) {
 		return
 	}
 
-	prescriptionService := prescription_service.Prescription{ID: id}
+	prescriptionService := services.Prescription{ID: id}
 	exist, err := prescriptionService.ExistByID()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_CHECK_EXIST_PRESCRIPTION_FAIL, nil)

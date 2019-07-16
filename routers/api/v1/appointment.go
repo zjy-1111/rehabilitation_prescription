@@ -5,8 +5,7 @@ import (
 	"rehabilitation_prescription/pkg/app"
 	"rehabilitation_prescription/pkg/e"
 	"rehabilitation_prescription/pkg/setting"
-	"rehabilitation_prescription/services/appoint_service"
-	"rehabilitation_prescription/services/auth_service"
+	"rehabilitation_prescription/services"
 	"rehabilitation_prescription/util"
 
 	"github.com/astaxie/beego/validation"
@@ -31,13 +30,13 @@ func GetPatients(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		ID:       doctorID,
 		UserType: 2,
 	}
 	checkValidAuth(c, authService)
 
-	appointService := appoint_service.Appointment{
+	appointService := services.Appointment{
 		DoctorID: doctorID,
 		PageNum:  util.GetPage(c),
 		PageSize: setting.AppSetting.PageSize,
@@ -76,18 +75,18 @@ func AddAppointment(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		ID:       form.DoctorID,
 		UserType: 2,
 	}
 	checkValidAuth(c, authService)
-	authService = auth_service.Auth{
+	authService = services.Auth{
 		ID:       form.PatientID,
 		UserType: 1,
 	}
 	checkValidAuth(c, authService)
 
-	appointService := appoint_service.Appointment{
+	appointService := services.Appointment{
 		DoctorID:  form.DoctorID,
 		PatientID: form.PatientID,
 	}
@@ -115,18 +114,18 @@ func EditAppointment(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		ID:       form.DoctorID,
 		UserType: 2,
 	}
 	checkValidAuth(c, authService)
-	authService = auth_service.Auth{
+	authService = services.Auth{
 		ID:       form.PatientID,
 		UserType: 1,
 	}
 	checkValidAuth(c, authService)
 
-	appointService := appoint_service.Appointment{
+	appointService := services.Appointment{
 		ID:        form.ID,
 		DoctorID:  form.DoctorID,
 		PatientID: form.PatientID,
@@ -161,7 +160,7 @@ func DelAppointment(c *gin.Context) {
 		return
 	}
 
-	appointService := appoint_service.Appointment{ID: id}
+	appointService := services.Appointment{ID: id}
 	exist, err := appointService.ExistByID()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_CHECK_EXIST_APPOINTMENT_FAIL, nil)
@@ -181,7 +180,7 @@ func DelAppointment(c *gin.Context) {
 	app.Response(c, http.StatusOK, e.SUCCESS, nil)
 }
 
-func checkValidAuth(c *gin.Context, a auth_service.Auth) {
+func checkValidAuth(c *gin.Context, a services.Auth) {
 	exist, err := a.ExistByID()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_EXIST_AUTH_FAIL, nil)

@@ -1,4 +1,4 @@
-package appoint_service
+package services
 
 import "rehabilitation_prescription/models"
 
@@ -11,14 +11,14 @@ type Appointment struct {
 	ModifiedOn int
 	DeletedOn  int
 
-	PageNum int
+	PageNum  int
 	PageSize int
 }
 
 func (a *Appointment) Add() error {
-	appointment := map[string]interface{} {
+	appointment := map[string]interface{}{
 		"patient_id": a.PatientID,
-		"doctor_id": a.DoctorID,
+		"doctor_id":  a.DoctorID,
 	}
 
 	if err := models.AddAppointment(appointment); err != nil {
@@ -29,9 +29,9 @@ func (a *Appointment) Add() error {
 }
 
 func (a *Appointment) Edit() error {
-	return models.EditAppointment(a.ID, map[string]interface{} {
+	return models.EditAppointment(a.ID, map[string]interface{}{
 		"patient_id": a.PatientID,
-		"doctor_id": a.DoctorID,
+		"doctor_id":  a.DoctorID,
 	})
 }
 
@@ -49,9 +49,9 @@ func (a *Appointment) Del() error {
 }
 
 func (a *Appointment) Count() (int, error) {
-	return models.GetPatientsTotal(map[string]interface{} {
+	return models.GetPatientsTotal(map[string]interface{}{
 		"deleted_on": 0,
-		"doctor_id": a.DoctorID,
+		"doctor_id":  a.DoctorID,
 	})
 }
 

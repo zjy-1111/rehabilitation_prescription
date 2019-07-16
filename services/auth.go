@@ -1,4 +1,4 @@
-package auth_service
+package services
 
 import (
 	"rehabilitation_prescription/models"

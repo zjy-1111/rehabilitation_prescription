@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"rehabilitation_prescription/pkg/app"
 	"rehabilitation_prescription/pkg/e"
-	"rehabilitation_prescription/services/auth_service"
+	"rehabilitation_prescription/services"
 	"rehabilitation_prescription/util"
 
 	"github.com/gin-gonic/gin"
@@ -31,7 +31,7 @@ func GetAuth(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		Username: form.Username,
 		Password: form.Password,
 		UserType: form.UserType,
@@ -75,7 +75,7 @@ func AddAuth(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		Username: form.Username,
 		Password: form.Password,
 		UserType: form.UserType,
@@ -123,7 +123,7 @@ func EditAuth(c *gin.Context) {
 		return
 	}
 
-	authService := auth_service.Auth{
+	authService := services.Auth{
 		Username: form.Username,
 		Password: form.Password,
 		UserType: form.UserType,
@@ -163,7 +163,7 @@ func EditAuth(c *gin.Context) {
 // @Failure 500 {object} app.Response
 // @Router /auth/{username} [delete]
 func DeleteAuth(c *gin.Context) {
-	authService := auth_service.Auth{Username: c.Param("username")}
+	authService := services.Auth{Username: c.Param("username")}
 	exists, err := authService.ExistByName()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_EXIST_AUTH_FAIL, nil)
