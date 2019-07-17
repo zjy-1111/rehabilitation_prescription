@@ -31,7 +31,7 @@ func (t *TrainingVideo) Add() error {
 }
 
 func (t *TrainingVideo) Edit() error {
-	return models.EditPrescription(t.ID, map[string]interface{}{
+	return models.EditTrainingVideo(t.ID, map[string]interface{}{
 		"video_url": t.VideoUrl,
 		"cover_url": t.CoverUrl,
 		"duration":  t.Duration,
