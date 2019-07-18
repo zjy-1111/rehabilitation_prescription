@@ -1,0 +1,4 @@
+[INFO][request.go:11]2019/07/18 16:53:28 [Username.Required Can not be empty]
+[INFO][request.go:11]2019/07/18 16:53:28 [Password.Required Can not be empty]
+[INFO][request.go:11]2019/07/18 16:53:28 [UserType.Required Can not be empty]
+[INFO][request.go:11]2019/07/18 16:53:28 [UserType.Range Range is 1 to 2]

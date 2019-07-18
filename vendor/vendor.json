@@ -51,6 +51,12 @@
 			"revisionTime": "2019-06-20T18:01:02Z"
 		},
 		{
+			"checksumSHA1": "/wseY6oofJqnvYP5hoMYSGCIU9A=",
+			"path": "github.com/gin-contrib/cors",
+			"revision": "5f50d4fb4e0306dcacc6f8e9bea2dcee784dbbdf",
+			"revisionTime": "2019-05-09T02:00:32Z"
+		},
+		{
 			"checksumSHA1": "qlEzrgKgIkh7y0ePm9BNo1cNdXo=",
 			"origin": "github.com/gin-gonic/gin/vendor/github.com/gin-contrib/sse",
 			"path": "github.com/gin-contrib/sse",
