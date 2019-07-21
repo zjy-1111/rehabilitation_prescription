@@ -32,7 +32,7 @@ func GetPatientReport(c *gin.Context) {
 
 	authService := services.Auth{
 		ID:       patientID,
-		UserType: 1,
+		UserType: "1",
 	}
 	checkValidAuth(c, authService)
 
@@ -55,7 +55,7 @@ func GetPatientReport(c *gin.Context) {
 	}
 
 	data := make(map[string]interface{})
-	data["lists"] = reports
+	data["items"] = reports
 	data["total"] = total
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
@@ -80,7 +80,7 @@ func AddPatientReport(c *gin.Context) {
 
 	authService := services.Auth{
 		ID:       form.PatientID,
-		UserType: 1,
+		UserType: "1",
 	}
 	checkValidAuth(c, authService)
 
@@ -122,7 +122,7 @@ func EditPatientReport(c *gin.Context) {
 
 	authService := services.Auth{
 		ID:       form.PatientID,
-		UserType: 1,
+		UserType: "1",
 	}
 	checkValidAuth(c, authService)
 

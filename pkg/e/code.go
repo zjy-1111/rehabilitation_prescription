@@ -15,6 +15,9 @@ const (
 	ERROR_NOT_EXIST_AUTH           = 20008
 	ERROR_EDIT_AUTH_FAIL           = 20009
 	ERROR_DELETE_AUTH_FAIL         = 20010
+	ERROR_COUNT_ADMINS_FAIL        = 20011
+	ERROR_GET_ADMINS_FAIL          = 20012
+	ERROR_GET_ADMIN_FAIL           = 20012
 
 	_                        = iota
 	ERROR_COUNT_PATIENT_FAIL = 10000 + iota

@@ -49,7 +49,7 @@ func GetPrescriptionVideos(c *gin.Context) {
 	}
 
 	data := make(map[string]interface{})
-	data["lists"] = videos
+	data["items"] = videos
 	data["total"] = total
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }

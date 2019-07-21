@@ -32,7 +32,7 @@ func GetPrescriptions(c *gin.Context) {
 
 	authService := services.Auth{
 		ID:       doctorID,
-		UserType: 2,
+		UserType: "2",
 	}
 	checkValidAuth(c, authService)
 
@@ -55,7 +55,7 @@ func GetPrescriptions(c *gin.Context) {
 	}
 
 	data := make(map[string]interface{})
-	data["lists"] = prescriptions
+	data["items"] = prescriptions
 	data["total"] = total
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
@@ -76,7 +76,7 @@ func AddPrescription(c *gin.Context) {
 
 	authService := services.Auth{
 		ID:       form.DoctorID,
-		UserType: 2,
+		UserType: "2",
 	}
 	checkValidAuth(c, authService)
 
@@ -110,7 +110,7 @@ func EditPrescription(c *gin.Context) {
 
 	authService := services.Auth{
 		ID:       form.DoctorID,
-		UserType: 2,
+		UserType: "2",
 	}
 	checkValidAuth(c, authService)
 

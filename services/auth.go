@@ -8,7 +8,7 @@ type Auth struct {
 	ID       int
 	Username string
 	Password string
-	UserType int
+	UserType string
 }
 
 func (a *Auth) Check() (bool, error) {

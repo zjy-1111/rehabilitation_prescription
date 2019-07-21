@@ -1,12 +1,11 @@
 package routers
 
 import (
+	"net/http"
 	"rehabilitation_prescription/middleware/jwt"
 	"rehabilitation_prescription/pkg/setting"
 	"rehabilitation_prescription/routers/api"
 	v1 "rehabilitation_prescription/routers/api/v1"
-
-	"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -15,12 +14,32 @@ import (
 	_ "rehabilitation_prescription/docs"
 )
 
+// 处理跨域请求,支持options访问
+func Cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		method := c.Request.Method
+
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+		c.Header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+		c.Header("Access-Control-Allow-Credentials", "true")
+
+		//放行所有OPTIONS方法
+		if method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+		}
+		// 处理请求
+		c.Next()
+	}
+}
+
 func InitRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	// r := gin.Default()
-	r.Use(cors.Default())
+	r.Use(Cors())
 
 	gin.SetMode(setting.ServerSetting.RunMode)
 
@@ -34,6 +53,13 @@ func InitRouter() *gin.Engine {
 	r.POST("/auth", api.AddAuth)
 	r.PUT("/auth/", api.EditAuth)
 	r.DELETE("/auth/:username", api.DeleteAuth)
+
+	r.GET("/admin/:id", api.GetAdminByID)
+	r.GET("/admin", api.GetAdmins)
+	r.POST("/admin/login", api.Login)
+	r.POST("/admin", api.AddAdmin)
+	r.PUT("/admin/:id", api.EditAdmin)
+	r.DELETE("/admin/:id", api.DeleteAdmin)
 
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(jwt.JWT())

@@ -8,11 +8,11 @@ type Auth struct {
 	Model
 	Username string `json:"username"`
 	Password string `json:"password"`
-	UserType int    `json:"user_type"` // 用户类型（1普通用户，2医生）
+	UserType string `json:"user_type"` // 用户类型（1普通用户，2医生, 3管理员）
 }
 
 // CheckAuth checks if authentication information exists
-func CheckAuth(username, password string, userType int) (bool, error) {
+func CheckAuth(username, password string, userType string) (bool, error) {
 	var auth Auth
 	err := db.Select("id").Where(Auth{Username: username, Password: password, UserType: userType}).First(&auth).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
@@ -54,7 +54,7 @@ func ExistAuthByID(id int) (bool, error) {
 	return false, nil
 }
 
-func AddAuth(username, password string, userType int) error {
+func AddAuth(username, password string, userType string) error {
 	auth := Auth{
 		Username: username,
 		Password: password,

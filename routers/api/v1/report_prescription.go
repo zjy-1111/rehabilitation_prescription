@@ -49,7 +49,7 @@ func GetReportPrescriptions(c *gin.Context) {
 	}
 
 	data := make(map[string]interface{})
-	data["lists"] = prescriptions
+	data["items"] = prescriptions
 	data["total"] = total
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
