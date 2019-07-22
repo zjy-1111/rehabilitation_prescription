@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"rehabilitation_prescription/pkg/app"
 	"rehabilitation_prescription/pkg/e"
@@ -13,9 +12,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AdminForm struct {
+type UserForm struct {
 	Username string `form:"username" valid:"Required;MaxSize(100)"`
 	Password string `form:"password" valid:"Required;MaxSize(100)"`
+	UserType string `form:"user_type" valid:"MaxSize(10)"`
+	Name     string `form:"name" valid:"MaxSize(100)"`
 }
 
 // @Summary 获取token
@@ -25,7 +26,7 @@ type AdminForm struct {
 // @Success 200 {object} json "{"code":200,"data":{},"msg":"ok"}"
 // @Router /admin [get]
 func Login(c *gin.Context) {
-	var form = AdminForm{}
+	var form = UserForm{}
 
 	httpCode, errCode := app.BindAndValid(c, &form)
 	if errCode != e.SUCCESS {
@@ -33,12 +34,13 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	adminService := services.Admin{
+	s := services.User{
 		Username: form.Username,
 		Password: form.Password,
+		UserType: "3",
 	}
 
-	isExist, err := adminService.Check()
+	isExist, err := s.Check()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -60,36 +62,38 @@ func Login(c *gin.Context) {
 	})
 }
 
-func GetAdminByID(c *gin.Context) {
-	service := services.Admin{ID: com.StrTo(c.Param("id")).MustInt()}
+func GetUserByID(c *gin.Context) {
+	s := services.User{ID: com.StrTo(c.Param("id")).MustInt()}
 
-	admin, err := service.GetAdminByID()
+	user, err := s.GetUserByID()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_ADMIN_FAIL, nil)
 		return
 	}
 
 	data := make(map[string]interface{})
-	data["admin"] = admin
+	data["user"] = user
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
 
-func GetAdmins(c *gin.Context) {
-	service := services.Admin{}
-	total, err := service.Count()
+func GetUsers(c *gin.Context) {
+	s := services.User{
+		UserType: c.Param("type"),
+	}
+	total, err := s.GetUsersTotalByType()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_COUNT_ADMINS_FAIL, nil)
 		return
 	}
 
-	admins, err := service.GetAdmins()
+	users, err := s.GetUsersByType()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_ADMINS_FAIL, nil)
 		return
 	}
 
 	data := make(map[string]interface{})
-	data["items"] = admins
+	data["items"] = users
 	data["total"] = total
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
@@ -101,8 +105,8 @@ func GetAdmins(c *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /admin [post]
-func AddAdmin(c *gin.Context) {
-	var form = AdminForm{}
+func AddUser(c *gin.Context) {
+	var form = UserForm{}
 
 	httpCode, errCode := app.BindAndValid(c, &form)
 	if errCode != e.SUCCESS {
@@ -110,21 +114,24 @@ func AddAdmin(c *gin.Context) {
 		return
 	}
 
-	adminService := services.Admin{
+	s := services.User{
 		Username: form.Username,
 		Password: form.Password,
+		UserType: form.UserType,
+		Name:     form.Name,
 	}
-	exists, err := adminService.ExistByName()
+
+	exist, err := s.ExistByName()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_EXIST_AUTH_FAIL, nil)
 		return
 	}
-	if exists {
+	if exist {
 		app.Response(c, http.StatusOK, e.ERROR_EXIST_AUTH, nil)
 		return
 	}
 
-	err = adminService.Add()
+	err = s.Add()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_ADD_AUTH_FAIL, nil)
 		return
@@ -148,8 +155,8 @@ func AddAdmin(c *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /admin/{username} [put]
-func EditAdmin(c *gin.Context) {
-	form := AdminForm{}
+func EditUser(c *gin.Context) {
+	form := UserForm{}
 
 	httpCode, errCode := app.BindAndValid(c, &form)
 	if errCode != e.SUCCESS {
@@ -157,24 +164,25 @@ func EditAdmin(c *gin.Context) {
 		return
 	}
 
-	adminService := services.Admin{
+	s := services.User{
 		ID:       com.StrTo(c.Param("id")).MustInt(),
 		Username: form.Username,
 		Password: form.Password,
+		Name:     form.Name,
 	}
 
-	exists, err := adminService.ExistByName()
+	exist, err := s.ExistByName()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_EXIST_AUTH_FAIL, nil)
 		return
 	}
 
-	if exists {
+	if exist {
 		app.Response(c, http.StatusOK, e.ERROR_EXIST_AUTH, nil)
 		return
 	}
 
-	err = adminService.Edit()
+	err = s.Edit()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_EDIT_AUTH_FAIL, nil)
 		return
@@ -196,21 +204,20 @@ func EditAdmin(c *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /admin/{username} [delete]
-func DeleteAdmin(c *gin.Context) {
-	adminService := services.Admin{ID: com.StrTo(c.Param("id")).MustInt()}
-	fmt.Println(adminService.ID)
-	exists, err := adminService.ExistByID()
+func DeleteUser(c *gin.Context) {
+	s := services.User{ID: com.StrTo(c.Param("id")).MustInt()}
+	exist, err := s.ExistByID()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_EXIST_AUTH_FAIL, nil)
 		return
 	}
 
-	if !exists {
+	if !exist {
 		app.Response(c, http.StatusOK, e.ERROR_NOT_EXIST_AUTH, nil)
 		return
 	}
 
-	if err := adminService.Delete(); err != nil {
+	if err := s.Delete(); err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_DELETE_AUTH_FAIL, nil)
 		return
 	}

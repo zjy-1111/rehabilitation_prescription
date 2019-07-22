@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"net/http"
 	"rehabilitation_prescription/pkg/e"
 
@@ -22,7 +21,6 @@ func BindAndValid(c *gin.Context, form interface{}) (int, int) {
 		return http.StatusInternalServerError, e.ERROR
 	}
 	if !check {
-		fmt.Println(2)
 		MarkErrors(valid.Errors)
 		return http.StatusBadRequest, e.INVALID_PARAMS
 	}
