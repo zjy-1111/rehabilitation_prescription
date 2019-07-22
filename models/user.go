@@ -9,7 +9,7 @@ type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	UserType string `json:"user_type"`
-	name     string `json:"name"`
+	Name     string `json:"name"`
 }
 
 // CheckUser checks if uentication information exists
@@ -66,13 +66,13 @@ func GetUserByID(id int) (User, error) {
 }
 
 func GetUsersByType(userType string) ([]*User, error) {
-	var admins []*User
-	err := db.Where("deleted_on = ? AND user_type = ?", 0, userType).Find(&admins).Error
+	var users []*User
+	err := db.Where("deleted_on = ? AND user_type = ?", 0, userType).Find(&users).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
 
-	return admins, nil
+	return users, nil
 }
 
 func GetUsersTotalByType(userType string) (total int, err error) {
@@ -88,7 +88,7 @@ func AddUser(username, password, userType, name string) error {
 		Username: username,
 		Password: password,
 		UserType: userType,
-		name:     name,
+		Name:     name,
 	}
 	if err := db.Create(&u).Error; err != nil {
 		return err
