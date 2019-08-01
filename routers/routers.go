@@ -61,6 +61,9 @@ func InitRouter() *gin.Engine {
 	r.PUT("/user/:id", api.EditUser)
 	r.DELETE("/user/:id", api.DeleteUser)
 
+	r.POST("/upload_image", api.UploadImage)
+	r.POST("/upload_video", api.UploadVideo)
+
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(jwt.JWT())
 	{
@@ -84,7 +87,8 @@ func InitRouter() *gin.Engine {
 		apiv1.PUT("/report_prescription/:id", v1.EditReportPrescription)
 		apiv1.DELETE("/report_prescription/:id", v1.DelReportPrescription)
 
-		apiv1.GET("/training_video", v1.GetTrainingVideos)
+		apiv1.GET("/training_video/:id", v1.GetTrainingVideo)
+		apiv1.GET("/training_videos", v1.GetTrainingVideos)
 		apiv1.POST("/training_video", v1.AddTrainingVideo)
 		apiv1.PUT("/training_video/:id", v1.EditTrainingVideo)
 		apiv1.DELETE("/training_video/:id", v1.DelTrainingVideo)

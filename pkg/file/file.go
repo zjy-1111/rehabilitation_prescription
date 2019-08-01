@@ -89,3 +89,4 @@ func MustOpen(fileName, filePath string) (*os.File, error) {
 
 	return f, nil
 }
+

@@ -26,6 +26,16 @@ func ExistTrainingVideoByID(id int) (bool, error) {
 	return false, nil
 }
 
+func GetTrainingVideo(id int) (*TrainingVideo, error) {
+	var t *TrainingVideo
+	err := db.Where("deleted_on = ? AND id = ?", 0, id).First(t).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return t, nil
+}
+
 func GetTrainingVideos(pageNum, pageSize int) ([]*TrainingVideo, error) {
 	var t []*TrainingVideo
 	err := db.Where("deleted_on = ?", 0).Offset(pageNum).Limit(pageSize).Find(&t).Error

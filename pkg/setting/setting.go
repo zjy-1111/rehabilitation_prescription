@@ -8,9 +8,16 @@ import (
 )
 
 type App struct {
-	JwtSecret string
-	PageSize  int
-	PrefixUrl string
+	JwtSecret          string
+	PageSize           int
+	Endpoint           string
+	BucketName         string
+	ImageAllowExts     []string
+	ImageMaxSize       int
+	VideoAllowExts     []string
+	VideoMaxSize       int
+	OssAccessKeyId     string
+	OssAccessKeySecret string
 
 	RuntimeRootPath string
 

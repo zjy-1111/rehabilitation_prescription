@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"rehabilitation_prescription/models"
+	"rehabilitation_prescription/pkg/ali_oss"
 	"rehabilitation_prescription/pkg/gredis"
 	"rehabilitation_prescription/pkg/logging"
 	"rehabilitation_prescription/pkg/setting"
@@ -22,6 +23,7 @@ func init() {
 	logging.InitLogger()
 	util.InitUtil()
 	gredis.InitRedis()
+	ali_oss.InitOssBucket()
 }
 
 func main() {

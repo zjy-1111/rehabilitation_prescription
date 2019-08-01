@@ -15,6 +15,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetTrainingVideo(c *gin.Context) {
+	s := services.TrainingVideo{
+		ID: com.StrTo(c.Param("id")).MustInt(),
+	}
+
+	video, err := s.GetVideoByID()
+	if err != nil {
+		app.Response(c, http.StatusInternalServerError, e.	ERROR_GET_TRAININGVIDEO_FAIL, nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["video"] = video
+	app.Response(c, http.StatusOK, e.SUCCESS, data)
+}
+
 func GetTrainingVideos(c *gin.Context) {
 	traningVideoServ := services.TrainingVideo{
 		PageNum:  util.GetPage(c),
@@ -41,8 +57,8 @@ func GetTrainingVideos(c *gin.Context) {
 
 type AddTrainingVideoForm struct {
 	VideoUrl string `json:"video_url" valid:"Required;MaxSize(255)"`
-	CoverUrl string `json:"cover_url" valid:"Required;MaxSize(255)"`
-	Duration int    `json:"duration" valid:"Required;Min(1)"`
+	CoverUrl string `json:"cover_url"`
+	Duration int    `json:"duration"`
 }
 
 func AddTrainingVideo(c *gin.Context) {
@@ -71,8 +87,8 @@ func AddTrainingVideo(c *gin.Context) {
 type EditTrainingVideoForm struct {
 	ID       int    `form:"id" valid:"Required;Min(1)"`
 	VideoUrl string `json:"video_url" valid:"Required;MaxSize(255)"`
-	CoverUrl string `json:"cover_url" valid:"Required;MaxSize(255)"`
-	Duration int    `json:"duration" valid:"Required;Min(1)"`
+	CoverUrl string `json:"cover_url" valid:"MaxSize(255)"`
+	Duration int    `json:"duration" valid:"Min(1)"`
 }
 
 func EditTrainingVideo(c *gin.Context) {

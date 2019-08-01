@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"rehabilitation_prescription/pkg/app"
 	"rehabilitation_prescription/pkg/e"
+	"rehabilitation_prescription/pkg/setting"
 	"rehabilitation_prescription/services"
 	"rehabilitation_prescription/util"
 
@@ -17,6 +18,7 @@ type UserForm struct {
 	Password string `form:"password" valid:"Required;MaxSize(100)"`
 	UserType string `form:"user_type" valid:"MaxSize(10)"`
 	Name     string `form:"name" valid:"MaxSize(100)"`
+	Avatar   string `form:"avatar" valid:"MaxSize(255)"`
 }
 
 // @Summary 获取token
@@ -79,6 +81,8 @@ func GetUserByID(c *gin.Context) {
 func GetUsers(c *gin.Context) {
 	s := services.User{
 		UserType: c.Param("type"),
+		PageNum:  util.GetPage(c),
+		PageSize: setting.AppSetting.PageSize,
 	}
 	total, err := s.GetUsersTotalByType()
 	if err != nil {
@@ -119,6 +123,7 @@ func AddUser(c *gin.Context) {
 		Password: form.Password,
 		UserType: form.UserType,
 		Name:     form.Name,
+		Avatar:   form.Avatar,
 	}
 
 	exist, err := s.ExistByName()
@@ -169,20 +174,10 @@ func EditUser(c *gin.Context) {
 		Username: form.Username,
 		Password: form.Password,
 		Name:     form.Name,
+		Avatar:   form.Avatar,
 	}
 
-	exist, err := s.ExistByName()
-	if err != nil {
-		app.Response(c, http.StatusInternalServerError, e.ERROR_EXIST_AUTH_FAIL, nil)
-		return
-	}
-
-	if exist {
-		app.Response(c, http.StatusOK, e.ERROR_EXIST_AUTH, nil)
-		return
-	}
-
-	err = s.Edit()
+	err := s.Edit()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_EDIT_AUTH_FAIL, nil)
 		return

@@ -10,6 +10,10 @@ type User struct {
 	Password string
 	UserType string
 	Name     string
+	Avatar   string
+
+	PageNum int
+	PageSize int
 }
 
 func (u *User) Check() (bool, error) {
@@ -34,7 +38,7 @@ func (u *User) GetUserByID() (admin models.User, err error) {
 }
 
 func (u *User) GetUsersByType() (users []*models.User, err error) {
-	users, err = models.GetUsersByType(u.UserType)
+	users, err = models.GetUsersByType(u.UserType, u.PageNum, u.PageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +51,7 @@ func (u *User) GetUsersTotalByType() (int, error) {
 }
 
 func (u *User) Add() error {
-	return models.AddUser(u.Username, u.Password, u.UserType, u.Name)
+	return models.AddUser(u.Username, u.Password, u.UserType, u.Name, u.Avatar)
 }
 
 func (u *User) Edit() error {
@@ -55,6 +59,7 @@ func (u *User) Edit() error {
 	data["username"] = u.Username
 	data["password"] = u.Password
 	data["name"] = u.Name
+	data["avatar"] = u.Avatar
 
 	return models.EditUser(u.ID, data)
 }

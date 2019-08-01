@@ -38,6 +38,15 @@ func (t *TrainingVideo) Edit() error {
 	})
 }
 
+func (t *TrainingVideo) GetVideoByID() (*models.TrainingVideo, error) {
+	video, err := models.GetTrainingVideo(t.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return video, nil
+}
+
 func (t *TrainingVideo) Get() ([]*models.TrainingVideo, error) {
 	videos, err := models.GetTrainingVideos(t.PageNum, t.PageSize)
 	if err != nil {

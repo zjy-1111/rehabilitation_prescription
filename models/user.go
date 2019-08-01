@@ -10,6 +10,7 @@ type User struct {
 	Password string `json:"password"`
 	UserType string `json:"user_type"`
 	Name     string `json:"name"`
+	Avatar   string `json:"avatar"`
 }
 
 // CheckUser checks if uentication information exists
@@ -65,13 +66,12 @@ func GetUserByID(id int) (User, error) {
 	return admin, nil
 }
 
-func GetUsersByType(userType string) ([]*User, error) {
+func GetUsersByType(userType string, pageNum, pageSize int) ([]*User, error) {
 	var users []*User
-	err := db.Where("deleted_on = ? AND user_type = ?", 0, userType).Find(&users).Error
+	err := db.Where("deleted_on = ? AND user_type = ?", 0, userType).Offset(pageNum).Limit(pageSize).Find(&users).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
-
 	return users, nil
 }
 
@@ -83,12 +83,13 @@ func GetUsersTotalByType(userType string) (total int, err error) {
 	return total, nil
 }
 
-func AddUser(username, password, userType, name string) error {
+func AddUser(username, password, userType, name, avatar string) error {
 	u := User{
 		Username: username,
 		Password: password,
 		UserType: userType,
 		Name:     name,
+		Avatar:   avatar,
 	}
 	if err := db.Create(&u).Error; err != nil {
 		return err
