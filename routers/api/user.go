@@ -21,13 +21,7 @@ type UserForm struct {
 	Avatar   string `form:"avatar" valid:"MaxSize(255)"`
 }
 
-// @Summary 获取token
-// @Produce json
-// @param username query string true "Username"
-// @param password query string true "Password"
-// @Success 200 {object} json "{"code":200,"data":{},"msg":"ok"}"
-// @Router /admin [get]
-func Login(c *gin.Context) {
+func AdminLogin(c *gin.Context) {
 	var form = UserForm{}
 
 	httpCode, errCode := app.BindAndValid(c, &form)
@@ -40,6 +34,52 @@ func Login(c *gin.Context) {
 		Username: form.Username,
 		Password: form.Password,
 		UserType: "3",
+	}
+
+	isExist, err := s.Check()
+	if err != nil {
+		app.Response(c, http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
+		return
+	}
+
+	if !isExist {
+		app.Response(c, http.StatusUnauthorized, e.ERROR_AUTH, nil)
+		return
+	}
+
+	token, err := util.GenerateToken(form.Username, form.Password)
+	if err != nil {
+		app.Response(c, http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
+		return
+	}
+
+	app.Response(c, http.StatusOK, e.SUCCESS, map[string]string{
+		"token": token,
+	})
+}
+
+// @Summary 普通用户登录
+// @Description get a token string
+// @Accept json
+// @Produce json
+// @Param username query string true "用户名"
+// @Param password query string true "密码"
+// @Param user_type query string true "用户类型"
+// @Success 200 {object} models.Response
+// @Router /user/login [post]
+func UserLogin(c *gin.Context) {
+	var form = UserForm{}
+
+	httpCode, errCode := app.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		app.Response(c, httpCode, errCode, nil)
+		return
+	}
+
+	s := services.User{
+		Username: form.Username,
+		Password: form.Password,
+		UserType: form.UserType,
 	}
 
 	isExist, err := s.Check()
@@ -102,13 +142,16 @@ func GetUsers(c *gin.Context) {
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
 
-// @Summary Add admin
-// @Produce  json
-// @Param username body string true "Username"
-// @Param password body string true "Password"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /admin [post]
+// @Summary 注册用户
+// @accept json
+// @produce json
+// @param username query string true "用户名"
+// @param password query string true "密码"
+// @param user_type query string true "用户类型"
+// @param name query string false "姓名"
+// @param avatar query string false "头像"
+// @success 200 {object} models.Response
+// @router /user [post]
 func AddUser(c *gin.Context) {
 	var form = UserForm{}
 
@@ -153,13 +196,6 @@ func AddUser(c *gin.Context) {
 	})
 }
 
-// @Summary Update Admin
-// @Produce  json
-// @Param username body string true "Username"
-// @Param password body string true "Password"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /admin/{username} [put]
 func EditUser(c *gin.Context) {
 	form := UserForm{}
 
@@ -194,11 +230,6 @@ func EditUser(c *gin.Context) {
 	})
 }
 
-// @Summary Delete admin
-// @Produce  json
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /admin/{username} [delete]
 func DeleteUser(c *gin.Context) {
 	s := services.User{ID: com.StrTo(c.Param("id")).MustInt()}
 	exist, err := s.ExistByID()

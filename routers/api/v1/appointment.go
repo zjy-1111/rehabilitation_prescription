@@ -30,7 +30,7 @@ func GetPatients(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       doctorID,
 		UserType: "2",
 	}
@@ -75,12 +75,12 @@ func AddAppointment(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       form.DoctorID,
 		UserType: "2",
 	}
 	checkValidAuth(c, authService)
-	authService = services.Auth{
+	authService = services.User{
 		ID:       form.PatientID,
 		UserType: "1",
 	}
@@ -114,12 +114,12 @@ func EditAppointment(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       form.DoctorID,
 		UserType: "2",
 	}
 	checkValidAuth(c, authService)
-	authService = services.Auth{
+	authService = services.User{
 		ID:       form.PatientID,
 		UserType: "1",
 	}
@@ -180,7 +180,7 @@ func DelAppointment(c *gin.Context) {
 	app.Response(c, http.StatusOK, e.SUCCESS, nil)
 }
 
-func checkValidAuth(c *gin.Context, a services.Auth) {
+func checkValidAuth(c *gin.Context, a services.User) {
 	exist, err := a.ExistByID()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_EXIST_AUTH_FAIL, nil)

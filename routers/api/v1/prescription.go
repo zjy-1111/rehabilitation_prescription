@@ -30,7 +30,7 @@ func GetPrescriptions(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       doctorID,
 		UserType: "2",
 	}
@@ -74,7 +74,7 @@ func AddPrescription(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       form.DoctorID,
 		UserType: "2",
 	}
@@ -108,7 +108,7 @@ func EditPrescription(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       form.DoctorID,
 		UserType: "2",
 	}

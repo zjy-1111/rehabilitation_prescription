@@ -7,9 +7,11 @@ import (
 type TrainingVideo struct {
 	Model
 
-	VideoUrl string `json:"video_url"`
-	CoverUrl string `json:"cover_url"`
-	Duration int    `json:"duration"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	VideoUrl    string `json:"video_url"`
+	CoverUrl    string `json:"cover_url"`
+	Duration    int    `json:"duration"`
 }
 
 func ExistTrainingVideoByID(id int) (bool, error) {
@@ -48,9 +50,11 @@ func GetTrainingVideos(pageNum, pageSize int) ([]*TrainingVideo, error) {
 
 func AddTrainingVideo(data map[string]interface{}) error {
 	t := TrainingVideo{
-		VideoUrl: data["video_url"].(string),
-		CoverUrl: data["cover_url"].(string),
-		Duration: data["duration"].(int),
+		Title:       data["title"].(string),
+		Description: data["description"].(string),
+		VideoUrl:    data["video_url"].(string),
+		CoverUrl:    data["cover_url"].(string),
+		Duration:    data["duration"].(int),
 	}
 
 	if err := db.Create(&t).Error; err != nil {

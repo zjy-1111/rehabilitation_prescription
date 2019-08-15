@@ -49,14 +49,11 @@ func InitRouter() *gin.Engine {
 			"message": "hello world!",
 		})
 	})
-	r.GET("/auth", api.GetAuth)
-	r.POST("/auth", api.AddAuth)
-	r.PUT("/auth", api.EditAuth)
-	r.DELETE("/auth/:username", api.DeleteAuth)
 
 	r.GET("/user/:id", api.GetUserByID)
 	r.GET("/users/:type", api.GetUsers)
-	r.POST("/admin/login", api.Login)
+	r.POST("/admin/login", api.AdminLogin)
+	r.POST("/user/login", api.UserLogin)
 	r.POST("/user", api.AddUser)
 	r.PUT("/user/:id", api.EditUser)
 	r.DELETE("/user/:id", api.DeleteUser)

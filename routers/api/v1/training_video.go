@@ -22,7 +22,7 @@ func GetTrainingVideo(c *gin.Context) {
 
 	video, err := s.GetVideoByID()
 	if err != nil {
-		app.Response(c, http.StatusInternalServerError, e.	ERROR_GET_TRAININGVIDEO_FAIL, nil)
+		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_TRAININGVIDEO_FAIL, nil)
 		return
 	}
 
@@ -56,9 +56,11 @@ func GetTrainingVideos(c *gin.Context) {
 }
 
 type AddTrainingVideoForm struct {
-	VideoUrl string `json:"video_url" valid:"Required;MaxSize(255)"`
-	CoverUrl string `json:"cover_url"`
-	Duration int    `json:"duration"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	VideoUrl    string `json:"video_url" valid:"Required;MaxSize(255)"`
+	CoverUrl    string `json:"cover_url"`
+	Duration    int    `json:"duration"`
 }
 
 func AddTrainingVideo(c *gin.Context) {
@@ -71,9 +73,11 @@ func AddTrainingVideo(c *gin.Context) {
 	}
 
 	trainingVideoServ := services.TrainingVideo{
-		VideoUrl: form.VideoUrl,
-		CoverUrl: form.CoverUrl,
-		Duration: form.Duration,
+		Title:       form.Title,
+		Description: form.Description,
+		VideoUrl:    form.VideoUrl,
+		CoverUrl:    form.CoverUrl,
+		Duration:    form.Duration,
 	}
 
 	if err := trainingVideoServ.Add(); err != nil {
@@ -85,10 +89,12 @@ func AddTrainingVideo(c *gin.Context) {
 }
 
 type EditTrainingVideoForm struct {
-	ID       int    `form:"id" valid:"Required;Min(1)"`
-	VideoUrl string `json:"video_url" valid:"Required;MaxSize(255)"`
-	CoverUrl string `json:"cover_url" valid:"MaxSize(255)"`
-	Duration int    `json:"duration" valid:"Min(1)"`
+	ID          int    `form:"id" valid:"Required;Min(1)"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	VideoUrl    string `json:"video_url" valid:"Required;MaxSize(255)"`
+	CoverUrl    string `json:"cover_url"`
+	Duration    int    `json:"duration"`
 }
 
 func EditTrainingVideo(c *gin.Context) {
@@ -101,10 +107,12 @@ func EditTrainingVideo(c *gin.Context) {
 	}
 
 	trainingVideoServ := services.TrainingVideo{
-		ID:       form.ID,
-		VideoUrl: form.VideoUrl,
-		CoverUrl: form.CoverUrl,
-		Duration: form.Duration,
+		ID:          form.ID,
+		Title:       form.Title,
+		Description: form.Description,
+		VideoUrl:    form.VideoUrl,
+		CoverUrl:    form.CoverUrl,
+		Duration:    form.Duration,
 	}
 	exists, err := trainingVideoServ.ExistByID()
 	if err != nil {

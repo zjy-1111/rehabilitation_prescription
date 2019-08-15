@@ -30,7 +30,7 @@ func GetPatientReport(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       patientID,
 		UserType: "1",
 	}
@@ -78,7 +78,7 @@ func AddPatientReport(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       form.PatientID,
 		UserType: "1",
 	}
@@ -120,7 +120,7 @@ func EditPatientReport(c *gin.Context) {
 		return
 	}
 
-	authService := services.Auth{
+	authService := services.User{
 		ID:       form.PatientID,
 		UserType: "1",
 	}

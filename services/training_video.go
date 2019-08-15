@@ -3,10 +3,12 @@ package services
 import "rehabilitation_prescription/models"
 
 type TrainingVideo struct {
-	ID       int
-	VideoUrl string
-	CoverUrl string
-	Duration int
+	ID          int
+	Title       string
+	Description string
+	VideoUrl    string
+	CoverUrl    string
+	Duration    int
 
 	CreatedOn  int
 	ModifiedOn int
@@ -18,9 +20,11 @@ type TrainingVideo struct {
 
 func (t *TrainingVideo) Add() error {
 	video := map[string]interface{}{
-		"video_url": t.VideoUrl,
-		"cover_url": t.CoverUrl,
-		"duration":  t.Duration,
+		"title":       t.Title,
+		"description": t.Description,
+		"video_url":   t.VideoUrl,
+		"cover_url":   t.CoverUrl,
+		"duration":    t.Duration,
 	}
 
 	if err := models.AddTrainingVideo(video); err != nil {
@@ -32,6 +36,8 @@ func (t *TrainingVideo) Add() error {
 
 func (t *TrainingVideo) Edit() error {
 	return models.EditTrainingVideo(t.ID, map[string]interface{}{
+		"title": t.Title,
+		"description": t.Description,
 		"video_url": t.VideoUrl,
 		"cover_url": t.CoverUrl,
 		"duration":  t.Duration,
