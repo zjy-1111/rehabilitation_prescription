@@ -15,11 +15,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @summary 病人列表
+// @accept json
+// @produce json
+// @param doctor_id query int true "医生id"
+// @success 200 {object} models.Response
+// @router /patients [get]
 func GetPatients(c *gin.Context) {
 	valid := validation.Validation{}
 
 	doctorID := -1
-	if arg := c.PostForm("doctor_id"); arg != "" {
+	if arg := c.Query("doctor_id"); arg != "" {
 		doctorID = com.StrTo(arg).MustInt()
 		valid.Min(doctorID, 1, "doctor_id")
 	}
@@ -36,27 +42,17 @@ func GetPatients(c *gin.Context) {
 	}
 	checkValidAuth(c, authService)
 
-	appointService := services.Appointment{
-		DoctorID: doctorID,
-		PageNum:  util.GetPage(c),
-		PageSize: setting.AppSetting.PageSize,
-	}
+	h := services.NewPatientsHandler(doctorID, util.GetPage(c), setting.AppSetting.PageSize)
 
-	total, err := appointService.Count()
-	if err != nil {
-		app.Response(c, http.StatusInternalServerError, e.ERROR_COUNT_PATIENT_FAIL, nil)
-		return
-	}
-
-	patientIDs, err := appointService.Get()
+	patients, err := h.GetPatients()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_PATIENTS_FAIL, nil)
 		return
 	}
 
 	data := make(map[string]interface{})
-	data["items"] = patientIDs
-	data["total"] = total
+	data["items"] = patients
+	data["total"] = len(patients)
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
 

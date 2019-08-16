@@ -175,7 +175,7 @@ func AddUser(c *gin.Context) {
 		return
 	}
 	if exist {
-		app.Response(c, http.StatusOK, e.ERROR_EXIST_AUTH, nil)
+		app.Response(c, http.StatusCreated, e.ERROR_EXIST_AUTH, nil)
 		return
 	}
 

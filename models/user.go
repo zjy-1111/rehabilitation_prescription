@@ -57,13 +57,13 @@ func ExistUserByID(id int) (bool, error) {
 }
 
 func GetUserByID(id int) (User, error) {
-	var admin User
-	err := db.Where("deleted_on = ? AND id = ?", 0, id).First(&admin).Error
+	var u User
+	err := db.Where("deleted_on = ? AND id = ?", 0, id).First(&u).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return admin, err
+		return u, err
 	}
 
-	return admin, nil
+	return u, nil
 }
 
 func GetUsersByType(userType string, pageNum, pageSize int) ([]*User, error) {

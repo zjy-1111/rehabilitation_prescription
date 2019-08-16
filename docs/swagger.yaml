@@ -19,6 +19,25 @@ info:
   title: '{{.Title}}'
   version: '{{.Version}}'
 paths:
+  /patients:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 医生id
+        in: query
+        name: doctor_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+            type: object
+      summary: 病人列表
   /user:
     post:
       consumes:

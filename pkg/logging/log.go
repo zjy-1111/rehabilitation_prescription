@@ -5,9 +5,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"runtime"
-
 	"rehabilitation_prescription/pkg/file"
+	"runtime"
 )
 
 type Level int

@@ -3,6 +3,11 @@
 	"ignore": "test",
 	"package": [
 		{
+			"path": "git",
+			"revision": "github.com:zjy-1111/style-string.git",
+			"version": "github.com:zjy-1111/style-string.git"
+		},
+		{
 			"checksumSHA1": "jJ7xZPq8GxWaMuPab+g0f+wqTqk=",
 			"path": "github.com/KyleBanks/depth",
 			"revision": "fec4dc38699e903ea7b44b2887549d2e7cd0a9f1",
@@ -39,6 +44,12 @@
 			"revisionTime": "2016-04-05T07:15:01Z"
 		},
 		{
+			"checksumSHA1": "gtkDD5Nlgq+chMDJZ2jswIs9UJI=",
+			"path": "github.com/aliyun/aliyun-oss-go-sdk/oss",
+			"revision": "a545cb0a44c7142a037e800b1424b875787b94e7",
+			"revisionTime": "2019-07-11T03:00:16Z"
+		},
+		{
 			"checksumSHA1": "pnz1Fnb3sJlOpkRAF6aP1XTVA3M=",
 			"path": "github.com/astaxie/beego/validation",
 			"revision": "e844058aeddf6065ac282a313e6f45a0a9f12731",
@@ -49,12 +60,6 @@
 			"path": "github.com/dgrijalva/jwt-go",
 			"revision": "5e25c22bd5d6de03265bbe5462dcd162f85046f6",
 			"revisionTime": "2019-06-20T18:01:02Z"
-		},
-		{
-			"checksumSHA1": "/wseY6oofJqnvYP5hoMYSGCIU9A=",
-			"path": "github.com/gin-contrib/cors",
-			"revision": "5f50d4fb4e0306dcacc6f8e9bea2dcee784dbbdf",
-			"revisionTime": "2019-05-09T02:00:32Z"
 		},
 		{
 			"checksumSHA1": "qlEzrgKgIkh7y0ePm9BNo1cNdXo=",
@@ -268,6 +273,12 @@
 			"path": "golang.org/x/text/width",
 			"revision": "342b2e1fbaa52c93f31447ad2c6abc048c63e475",
 			"revisionTime": "2018-12-15T17:52:45Z"
+		},
+		{
+			"checksumSHA1": "7Ev/X4Xe8P3961myez/hBKO05ig=",
+			"path": "golang.org/x/time/rate",
+			"revision": "9d24e82272b4f38b78bc8cff74fa936d31ccd8ef",
+			"revisionTime": "2019-02-15T22:48:40Z"
 		},
 		{
 			"checksumSHA1": "LHHkpIoYHpQiBc7y0JaTmf3VbVQ=",
