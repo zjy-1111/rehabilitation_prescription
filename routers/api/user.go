@@ -7,6 +7,7 @@ import (
 	"rehabilitation_prescription/pkg/setting"
 	"rehabilitation_prescription/services"
 	"rehabilitation_prescription/util"
+	"strconv"
 
 	"github.com/Unknwon/com"
 
@@ -36,7 +37,7 @@ func AdminLogin(c *gin.Context) {
 		UserType: "3",
 	}
 
-	isExist, err := s.Check()
+	uid, isExist, err := s.Check()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -54,6 +55,7 @@ func AdminLogin(c *gin.Context) {
 	}
 
 	app.Response(c, http.StatusOK, e.SUCCESS, map[string]string{
+		"uid": strconv.Itoa(uid),
 		"token": token,
 	})
 }
@@ -82,7 +84,7 @@ func UserLogin(c *gin.Context) {
 		UserType: form.UserType,
 	}
 
-	isExist, err := s.Check()
+	uid, isExist, err := s.Check()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -99,7 +101,9 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
+
 	app.Response(c, http.StatusOK, e.SUCCESS, map[string]string{
+		"uid": strconv.Itoa(uid),
 		"token": token,
 	})
 }

@@ -2,7 +2,6 @@ package routers
 
 import (
 	"net/http"
-	"rehabilitation_prescription/middleware/jwt"
 	"rehabilitation_prescription/pkg/setting"
 	"rehabilitation_prescription/routers/api"
 	v1 "rehabilitation_prescription/routers/api/v1"
@@ -62,13 +61,13 @@ func InitRouter() *gin.Engine {
 	r.POST("/upload_video", api.UploadVideo)
 
 	apiv1 := r.Group("/api/v1")
-	apiv1.Use(jwt.JWT())
+	//apiv1.Use(jwt.JWT())
 	{
 		apiv1.GET("/patients", v1.GetPatients)
 		// apiv1.GET("/appoint", v1.GetPatients)
 		apiv1.POST("/appoint", v1.AddAppointment)
 		apiv1.PUT("/appoint/:id", v1.EditAppointment)
-		apiv1.DELETE("/appoint/:id", v1.DelAppointment)
+		apiv1.DELETE("/patient/:id", v1.DelAppointment)
 
 		apiv1.GET("/prescription", v1.GetPrescriptions)
 		apiv1.POST("/prescription", v1.AddPrescription)
@@ -91,10 +90,10 @@ func InitRouter() *gin.Engine {
 		apiv1.PUT("/training_video/:id", v1.EditTrainingVideo)
 		apiv1.DELETE("/training_video/:id", v1.DelTrainingVideo)
 
-		apiv1.GET("/prescription_video", v1.GetPrescriptionVideos)
-		apiv1.POST("/prescription_video", v1.AddPrescriptionVideo)
-		apiv1.PUT("/prescription_video/:id", v1.EditPrescriptionVideo)
-		apiv1.DELETE("/prescription_video/:id", v1.DelPrescriptionVideo)
+		//apiv1.GET("/prescription_video", v1.GetRPrescriptionTrainings)
+		apiv1.POST("/prescription_video", v1.AddRPrescriptionTraining)
+		apiv1.PUT("/prescription_video/:id", v1.EditRPrescriptionTraining)
+		apiv1.DELETE("/prescription_video/:id", v1.DelRPrescriptionTraining)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

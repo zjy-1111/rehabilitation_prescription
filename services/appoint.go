@@ -35,14 +35,14 @@ func (a *Appointment) Edit() error {
 	})
 }
 
-func (a *Appointment) Get() ([]int, error) {
-	patientIDs, err := models.GetPatientsByDoctorID(a.PageNum, a.PageSize, a.DoctorID)
-	if err != nil {
-		return nil, err
-	}
-
-	return patientIDs, nil
-}
+//func (a *Appointment) Get() ([]int, error) {
+//	patientIDs, err := models.GetPatientsByDoctorID(a.PageNum, a.PageSize, a.DoctorID, )
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return patientIDs, nil
+//}
 
 func (a *Appointment) Del() error {
 	return models.DelAppointment(a.ID)

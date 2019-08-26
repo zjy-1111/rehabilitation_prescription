@@ -7,8 +7,11 @@ import (
 type Prescription struct {
 	Model
 
-	Desc     string `json:"desc"`
-	DoctorID int    `json:"doctor_id"`
+	Title     string `json:"title"`
+	PatientID int    `json:"patient_id"`
+	//Name      string `json:"name"`
+	//Sex       string `json:"sex"`
+	//Age       int    `json:"age"`
 }
 
 func ExistPrescriptionByID(id int) (bool, error) {
@@ -25,9 +28,9 @@ func ExistPrescriptionByID(id int) (bool, error) {
 	return false, nil
 }
 
-func GetPrescriptionByDoctorID(pageNum, pageSize, doctorID int) ([]*Prescription, error) {
+func GetPatientPrescriptions(pageNum, pageSize, patientID int) ([]*Prescription, error) {
 	var ps []*Prescription
-	err := db.Where("doctor_id = ? AND deleted_on = ?", doctorID, 0).Offset(pageNum).Limit(pageSize).Find(&ps).Error
+	err := db.Where("patient_id = ? AND deleted_on = ?", patientID, 0).Offset(pageNum).Limit(pageSize).Find(&ps).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -35,14 +38,26 @@ func GetPrescriptionByDoctorID(pageNum, pageSize, doctorID int) ([]*Prescription
 	return ps, nil
 }
 
-func AddPrescription(data map[string]interface{}) error {
+func AddPrescription(data map[string]interface{}, trainingIDList []int) error {
 	p := Prescription{
-		Desc:     data["prescription_describe"].(string),
-		DoctorID: data["doctor_id"].(int),
+		Title:     data["title"].(string),
+		PatientID: data["patient_id"].(int),
+		//Name:      data["name"].(string),
+		//Sex:       data["sex"].(string),
+		//Age:       data["age"].(int),
 	}
 
 	if err := db.Create(&p).Error; err != nil {
 		return err
+	}
+
+	// 添加training和prescription的关系
+	for _, id := range trainingIDList {
+		data := map[string]interface{} {
+			"prescription_id": p.ID,
+			"training_id": id,
+		}
+		AddRPrescriptionTraining(data)
 	}
 
 	return nil

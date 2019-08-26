@@ -32,18 +32,18 @@ func GetTrainingVideo(c *gin.Context) {
 }
 
 func GetTrainingVideos(c *gin.Context) {
-	traningVideoServ := services.TrainingVideo{
+	s := services.TrainingVideo{
 		PageNum:  util.GetPage(c),
 		PageSize: setting.AppSetting.PageSize,
 	}
 
-	total, err := traningVideoServ.Count()
+	total, err := s.Count()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_COUNT_TRAININGVIDEO_FAIL, nil)
 		return
 	}
 
-	videos, err := traningVideoServ.Get()
+	videos, err := s.Get()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_TRAININGVIDEOS_FAIL, nil)
 		return

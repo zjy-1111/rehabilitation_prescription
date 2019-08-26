@@ -2,11 +2,14 @@ package v1
 
 import (
 	"net/http"
+	"rehabilitation_prescription/handlers"
 	"rehabilitation_prescription/pkg/app"
 	"rehabilitation_prescription/pkg/e"
 	"rehabilitation_prescription/pkg/setting"
 	"rehabilitation_prescription/services"
 	"rehabilitation_prescription/util"
+	"strconv"
+	"strings"
 
 	"github.com/astaxie/beego/validation"
 
@@ -18,10 +21,10 @@ import (
 func GetPrescriptions(c *gin.Context) {
 	valid := validation.Validation{}
 
-	doctorID := -1
-	if arg := c.PostForm("doctor_id"); arg != "" {
-		doctorID = com.StrTo(arg).MustInt()
-		valid.Min(doctorID, 1, "doctor_id")
+	patientID := -1
+	if arg := c.Query("patient_id"); arg != "" {
+		patientID = com.StrTo(arg).MustInt()
+		valid.Min(patientID, 1, "patient_id")
 	}
 
 	if valid.HasErrors() {
@@ -30,25 +33,15 @@ func GetPrescriptions(c *gin.Context) {
 		return
 	}
 
-	authService := services.User{
-		ID:       doctorID,
-		UserType: "2",
-	}
-	checkValidAuth(c, authService)
+	//authService := services.User{
+	//	ID:       patientID,
+	//	UserType: "2",
+	//}
+	//checkValidAuth(c, authService)
 
-	prescriptionService := services.Prescription{
-		DoctorID: doctorID,
-		PageNum:  util.GetPage(c),
-		PageSize: setting.AppSetting.PageSize,
-	}
+	h := handlers.NewPrescriptionHandler(patientID, util.GetPage(c), setting.AppSetting.PageSize)
 
-	total, err := prescriptionService.Count()
-	if err != nil {
-		app.Response(c, http.StatusInternalServerError, e.ERROR_COUNT_PRESCRIPTION_FAIL, nil)
-		return
-	}
-
-	prescriptions, err := prescriptionService.Get()
+	prescriptions, err := h.GetPrescriptions()
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_PRESCRIPTIONS_FAIL, nil)
 		return
@@ -56,13 +49,14 @@ func GetPrescriptions(c *gin.Context) {
 
 	data := make(map[string]interface{})
 	data["items"] = prescriptions
-	data["total"] = total
+	data["total"] = len(prescriptions)
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
 
 type AddPrescriptionForm struct {
-	DoctorID int    `form:"doctor_id" valid:"Required;Min(1)"`
-	Desc     string `form:"desc" valid:"Required;MaxSize(255)"`
+	Title          string `form:"title" valid:"Required;MaxSize(255)"`
+	PatientID      int    `form:"patient_id" valid:"Required;Min(1)"`
+	TrainingIDList string `form:"training_id_list"`
 }
 
 func AddPrescription(c *gin.Context) {
@@ -74,18 +68,25 @@ func AddPrescription(c *gin.Context) {
 		return
 	}
 
-	authService := services.User{
-		ID:       form.DoctorID,
-		UserType: "2",
-	}
-	checkValidAuth(c, authService)
+	//authService := services.User{
+	//	ID:       form.DoctorID,
+	//	UserType: "2",
+	//}
+	//checkValidAuth(c, authService)
 
-	prescriptionService := services.Prescription{
-		DoctorID: form.DoctorID,
-		Desc:     form.Desc,
+	lists := strings.Split(form.TrainingIDList, ",")
+	trainingIDList := make([]int, len(lists))
+	for i := 0; i < len(lists); i++ {
+		trainingIDList[i], _ = strconv.Atoi(lists[i])
 	}
 
-	if err := prescriptionService.Add(); err != nil {
+	s := services.Prescription{
+		Title:          form.Title,
+		PatientID:      form.PatientID,
+		TrainingIDList: trainingIDList,
+	}
+
+	if err := s.Add(); err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_ADD_PRESCRIPTION_FAIL, nil)
 		return
 	}
@@ -94,9 +95,9 @@ func AddPrescription(c *gin.Context) {
 }
 
 type EditPrescriptionForm struct {
-	ID       int    `form:"id" valid:"Required;Min(1)"`
-	DoctorID int    `form:"doctor_id" valid:"Required;Min(1)"`
-	Desc     string `form:"desc" valid:"Required;MaxSize(255)"`
+	ID        int    `form:"id" valid:"Required;Min(1)"`
+	PatientID int    `form:"patient_id" valid:"Required;Min(1)"`
+	Title     string `form:"title" valid:"Required;MaxSize(255)"`
 }
 
 func EditPrescription(c *gin.Context) {
@@ -108,16 +109,16 @@ func EditPrescription(c *gin.Context) {
 		return
 	}
 
-	authService := services.User{
-		ID:       form.DoctorID,
-		UserType: "2",
-	}
-	checkValidAuth(c, authService)
+	//authService := services.User{
+	//	ID:       form.PatientID,
+	//	UserType: "2",
+	//}
+	//checkValidAuth(c, authService)
 
 	prescriptionService := services.Prescription{
-		ID:       form.ID,
-		DoctorID: form.DoctorID,
-		Desc:     form.Desc,
+		ID:        form.ID,
+		PatientID: form.PatientID,
+		Title:     form.Title,
 	}
 	exists, err := prescriptionService.ExistByID()
 	if err != nil {

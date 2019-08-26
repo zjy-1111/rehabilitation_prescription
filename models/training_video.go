@@ -29,18 +29,18 @@ func ExistTrainingVideoByID(id int) (bool, error) {
 }
 
 func GetTrainingVideo(id int) (*TrainingVideo, error) {
-	var t *TrainingVideo
-	err := db.Where("deleted_on = ? AND id = ?", 0, id).First(t).Error
+	var t TrainingVideo
+	err := db.Where("deleted_on = ? AND id = ?", 0, id).First(&t).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
 
-	return t, nil
+	return &t, nil
 }
 
-func GetTrainingVideos(pageNum, pageSize int) ([]*TrainingVideo, error) {
+func GetTrainingVideos(id int) ([]*TrainingVideo, error) {
 	var t []*TrainingVideo
-	err := db.Where("deleted_on = ?", 0).Offset(pageNum).Limit(pageSize).Find(&t).Error
+	err := db.Where("deleted_on = ? AND id = ?", 0, id).Find(&t).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}

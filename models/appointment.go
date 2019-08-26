@@ -27,7 +27,9 @@ func ExistAppointmentByID(id int) (bool, error) {
 
 func GetPatientsByDoctorID(pageNum, pageSize, doctorID int) ([]int, error) {
 	var as []*RDoctorPatient
-	err := db.Select("patient_id").Where("doctor_id = ? AND deleted_on = ?", doctorID, 0).Offset(pageNum).Limit(pageSize).Find(&as).Error
+	err := db.Select("patient_id").Where(
+		"doctor_id = ? AND deleted_on = ?", doctorID, 0).Offset(pageNum).Limit(pageSize).Find(&as).Error
+
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -39,6 +41,23 @@ func GetPatientsByDoctorID(pageNum, pageSize, doctorID int) ([]int, error) {
 
 	return res, nil
 }
+
+func GetAllPatients(doctorID int) ([]int, error) {
+	var ps []*RDoctorPatient
+	err := db.Select("patient_id").Where(
+		"doctor_id = ? AND deleted_on = ?", doctorID, 0).Find(&ps).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	res := make([]int, len(ps))
+	for i, p := range ps {
+		res[i] = p.PatientID
+	}
+
+	return res, nil
+}
+
 
 func AddAppointment(data map[string]interface{}) error {
 	a := RDoctorPatient{

@@ -6,26 +6,29 @@ import (
 
 type User struct {
 	Model
-	Username string `json:"username"`
-	Password string `json:"password"`
-	UserType string `json:"user_type"`
-	Name     string `json:"name"`
-	Avatar   string `json:"avatar"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	UserType    string `json:"user_type"`
+	Name        string `json:"name"`
+	Avatar      string `json:"avatar"`
+	Sex         string `json:"sex"`
+	Age         int    `json:"age"`
+	Description string `json:"description"`
 }
 
 // CheckUser checks if uentication information exists
-func CheckUser(username, password, userType string) (bool, error) {
+func CheckUser(username, password, userType string) (int, bool, error) {
 	var u User
 	err := db.Select("id").Where(User{Username: username, Password: password, UserType: userType}).First(&u).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return false, err
+		return 0, false, err
 	}
 
 	if u.ID > 0 && u.DeletedOn == 0 {
-		return true, nil
+		return u.ID, true, nil
 	}
 
-	return false, nil
+	return 0, false, nil
 }
 
 func ExistUserByName(name string) (bool, error) {

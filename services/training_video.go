@@ -54,7 +54,7 @@ func (t *TrainingVideo) GetVideoByID() (*models.TrainingVideo, error) {
 }
 
 func (t *TrainingVideo) Get() ([]*models.TrainingVideo, error) {
-	videos, err := models.GetTrainingVideos(t.PageNum, t.PageSize)
+	videos, err := models.GetTrainingVideos(1)
 	if err != nil {
 		return nil, err
 	}

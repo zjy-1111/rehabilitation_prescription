@@ -1,11 +1,17 @@
 package services
 
-import "rehabilitation_prescription/models"
+import (
+	"rehabilitation_prescription/models"
+)
 
 type Prescription struct {
-	ID       int
-	Desc     string
-	DoctorID int
+	ID             int
+	Title          string
+	PatientID      int
+	TrainingIDList []int
+	//Name      string
+	//Sex       string
+	//Age       int
 
 	CreatedOn  int
 	ModifiedOn int
@@ -17,11 +23,14 @@ type Prescription struct {
 
 func (p *Prescription) Add() error {
 	prescription := map[string]interface{}{
-		"prescription_describe": p.Desc,
-		"doctor_id":             p.DoctorID,
+		"title":      p.Title,
+		"patient_id": p.PatientID,
+		//"name":       p.Name,
+		//"sex":        p.Sex,
+		//"age":        p.Age,
 	}
 
-	if err := models.AddPrescription(prescription); err != nil {
+	if err := models.AddPrescription(prescription, p.TrainingIDList); err != nil {
 		return err
 	}
 
@@ -30,13 +39,16 @@ func (p *Prescription) Add() error {
 
 func (p *Prescription) Edit() error {
 	return models.EditPrescription(p.ID, map[string]interface{}{
-		"prescription_describe": p.Desc,
-		"doctor_id":             p.DoctorID,
+		"title":      p.Title,
+		"patient_id": p.PatientID,
+		//"name":       p.Name,
+		//"sex":        p.Sex,
+		//"age":        p.Age,
 	})
 }
 
 func (p *Prescription) Get() ([]*models.Prescription, error) {
-	prescriptions, err := models.GetPrescriptionByDoctorID(p.PageNum, p.PageSize, p.DoctorID)
+	prescriptions, err := models.GetPatientPrescriptions(p.PageNum, p.PageSize, p.PatientID)
 	if err != nil {
 		return nil, err
 	}
@@ -45,13 +57,13 @@ func (p *Prescription) Get() ([]*models.Prescription, error) {
 }
 
 func (p *Prescription) Del() error {
-	return models.DelAppointment(p.ID)
+	return models.DelPrescription(p.ID)
 }
 
 func (p *Prescription) Count() (int, error) {
-	return models.GetPatientsTotal(map[string]interface{}{
+	return models.GetPrescriptionsTotal(map[string]interface{}{
 		"deleted_on": 0,
-		"doctor_id":  p.DoctorID,
+		"patient_id": p.PatientID,
 	})
 }
 

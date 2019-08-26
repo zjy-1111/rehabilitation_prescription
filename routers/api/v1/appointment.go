@@ -2,6 +2,7 @@ package v1
 
 import (
 	"net/http"
+	"rehabilitation_prescription/handlers"
 	"rehabilitation_prescription/pkg/app"
 	"rehabilitation_prescription/pkg/e"
 	"rehabilitation_prescription/pkg/setting"
@@ -15,36 +16,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Query struct {
+	DoctorID    int    `form:"doctor_id"`
+	PatientName string `form:"patient_name"`
+}
+
 // @summary 病人列表
 // @accept json
 // @produce json
 // @param doctor_id query int true "医生id"
+// @param page query int true "分页"
+// @param patient_name string false "按病人名称查询"
 // @success 200 {object} models.Response
-// @router /patients [get]
+// @router api/v1/patients [get]
 func GetPatients(c *gin.Context) {
-	valid := validation.Validation{}
-
-	doctorID := -1
-	if arg := c.Query("doctor_id"); arg != "" {
-		doctorID = com.StrTo(arg).MustInt()
-		valid.Min(doctorID, 1, "doctor_id")
-	}
-
-	if valid.HasErrors() {
-		app.MarkErrors(valid.Errors)
-		app.Response(c, http.StatusBadRequest, e.INVALID_PARAMS, nil)
+	var q Query
+	httpCode, errCode := app.BindAndValid(c, &q)
+	if errCode != e.SUCCESS {
+		app.Response(c, httpCode, errCode, nil)
 		return
 	}
 
-	authService := services.User{
-		ID:       doctorID,
-		UserType: "2",
-	}
-	checkValidAuth(c, authService)
+	//authService := services.User{
+	//	ID:       doctorID,
+	//	UserType: "2",
+	//}
+	//checkValidAuth(c, authService)
 
-	h := services.NewPatientsHandler(doctorID, util.GetPage(c), setting.AppSetting.PageSize)
+	h := handlers.NewPatientsHandler(q.DoctorID, util.GetPage(c), setting.AppSetting.PageSize)
 
-	patients, err := h.GetPatients()
+	patients, err := h.GetPatients(q.PatientName)
 	if err != nil {
 		app.Response(c, http.StatusInternalServerError, e.ERROR_GET_PATIENTS_FAIL, nil)
 		return

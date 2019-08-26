@@ -11,12 +11,15 @@ type User struct {
 	UserType string
 	Name     string
 	Avatar   string
+	Sex string
+	Age int
+	Description string
 
 	PageNum int
 	PageSize int
 }
 
-func (u *User) Check() (bool, error) {
+func (u *User) Check() (int, bool, error) {
 	return models.CheckUser(u.Username, u.Password, u.UserType)
 }
 
