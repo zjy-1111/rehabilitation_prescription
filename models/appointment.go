@@ -25,34 +25,36 @@ func ExistAppointmentByID(id int) (bool, error) {
 	return false, nil
 }
 
-func GetPatientsByDoctorID(pageNum, pageSize, doctorID int) ([]int, error) {
+func GetPatientsByDoctorID(pageNum, pageSize, doctorID int) ([][2]int, error) {
 	var as []*RDoctorPatient
-	err := db.Select("patient_id").Where(
+	err := db.Select("id,patient_id").Where(
 		"doctor_id = ? AND deleted_on = ?", doctorID, 0).Offset(pageNum).Limit(pageSize).Find(&as).Error
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
 
-	res := make([]int, len(as))
+	res := make([][2]int, len(as))
 	for i, a := range as {
-		res[i] = a.PatientID
+		res[i][0] = a.ID
+		res[i][1] = a.PatientID
 	}
 
 	return res, nil
 }
 
-func GetAllPatients(doctorID int) ([]int, error) {
+func GetAllPatients(doctorID int) ([][2]int, error) {
 	var ps []*RDoctorPatient
-	err := db.Select("patient_id").Where(
+	err := db.Select("id,patient_id").Where(
 		"doctor_id = ? AND deleted_on = ?", doctorID, 0).Find(&ps).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
 
-	res := make([]int, len(ps))
+	res := make([][2]int, len(ps))
 	for i, p := range ps {
-		res[i] = p.PatientID
+		res[i][0] = p.ID
+		res[i][1] = p.PatientID
 	}
 
 	return res, nil
