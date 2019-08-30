@@ -1,6 +1,8 @@
 package services
 
-import "rehabilitation_prescription/models"
+import (
+	"rehabilitation_prescription/models"
+)
 
 type Appointment struct {
 	ID        int

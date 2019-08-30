@@ -56,6 +56,7 @@ func GetPrescriptions(c *gin.Context) {
 type AddPrescriptionForm struct {
 	Title          string `form:"title" valid:"Required;MaxSize(255)"`
 	PatientID      int    `form:"patient_id" valid:"Required;Min(1)"`
+	Desc           string `form:"desc" valid:"Required;MaxSize(255)"`
 	TrainingIDList string `form:"training_id_list"`
 }
 
@@ -83,6 +84,7 @@ func AddPrescription(c *gin.Context) {
 	s := services.Prescription{
 		Title:          form.Title,
 		PatientID:      form.PatientID,
+		Desc: form.Desc,
 		TrainingIDList: trainingIDList,
 	}
 

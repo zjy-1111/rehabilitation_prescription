@@ -13,6 +13,8 @@ type PrescriptionHandler struct {
 type Prescription struct {
 	ID          int         `json:"id"`
 	Title       string      `json:"title"`
+	Desc        string      `json:"desc"`
+	CreatedOn int `json:"created_on"`
 	PatientName string      `json:"patient_name"`
 	Sex         string      `json:"sex"`
 	Age         int         `json:"age"`
@@ -20,10 +22,13 @@ type Prescription struct {
 }
 
 type Training struct {
-	ID       int    `json:"id"`
-	Title    string `json:"title"`
-	Desc     string `json:"desc"`
-	VideoUrl string `json:"video_url"`
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	Desc      string `json:"desc"`
+	VideoUrl  string `json:"video_url"`
+	CoverUrl  string `json:"cover_url"`
+	Author    string `json:"author"`
+	CreatedOn int    `json:"created_on"`
 }
 
 func NewPrescriptionHandler(patientID, offset, limit int) *PrescriptionHandler {
@@ -52,6 +57,8 @@ func (h *PrescriptionHandler) GetPrescriptions() ([]*Prescription, error) {
 		ps[i] = &Prescription{
 			ID:          prescriptions[i].ID,
 			Title:       prescriptions[i].Title,
+			Desc:        prescriptions[i].Desc,
+			CreatedOn:  prescriptions[i].CreatedOn,
 			PatientName: userInfo.Name,
 			Sex:         userInfo.Sex,
 			Age:         userInfo.Age,
@@ -73,10 +80,13 @@ func (h *PrescriptionHandler) getTrainings(prescriptionID int) []*Training {
 			continue
 		}
 		training := &Training{
-			ID:       trainingInfo.ID,
-			Title:    trainingInfo.Title,
-			Desc:     trainingInfo.Description,
-			VideoUrl: trainingInfo.VideoUrl,
+			ID:        trainingInfo.ID,
+			Title:     trainingInfo.Title,
+			Desc:      trainingInfo.Description,
+			VideoUrl:  trainingInfo.VideoUrl,
+			CoverUrl:  trainingInfo.CoverUrl,
+			Author:    trainingInfo.CreatedBy,
+			CreatedOn: trainingInfo.CreatedOn,
 		}
 		trainings = append(trainings, training)
 	}

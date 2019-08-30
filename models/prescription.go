@@ -9,6 +9,7 @@ type Prescription struct {
 
 	Title     string `json:"title"`
 	PatientID int    `json:"patient_id"`
+	Desc string `json:"desc"`
 	//Name      string `json:"name"`
 	//Sex       string `json:"sex"`
 	//Age       int    `json:"age"`
@@ -42,6 +43,7 @@ func AddPrescription(data map[string]interface{}, trainingIDList []int) error {
 	p := Prescription{
 		Title:     data["title"].(string),
 		PatientID: data["patient_id"].(int),
+		Desc: data["desc"].(string),
 		//Name:      data["name"].(string),
 		//Sex:       data["sex"].(string),
 		//Age:       data["age"].(int),

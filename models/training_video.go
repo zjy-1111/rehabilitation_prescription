@@ -12,6 +12,7 @@ type TrainingVideo struct {
 	VideoUrl    string `json:"video_url"`
 	CoverUrl    string `json:"cover_url"`
 	Duration    int    `json:"duration"`
+	CreatedBy string `json:"created_by"`
 }
 
 func ExistTrainingVideoByID(id int) (bool, error) {
