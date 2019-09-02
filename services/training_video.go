@@ -36,11 +36,11 @@ func (t *TrainingVideo) Add() error {
 
 func (t *TrainingVideo) Edit() error {
 	return models.EditTrainingVideo(t.ID, map[string]interface{}{
-		"title": t.Title,
+		"title":       t.Title,
 		"description": t.Description,
-		"video_url": t.VideoUrl,
-		"cover_url": t.CoverUrl,
-		"duration":  t.Duration,
+		"video_url":   t.VideoUrl,
+		"cover_url":   t.CoverUrl,
+		"duration":    t.Duration,
 	})
 }
 
@@ -54,7 +54,7 @@ func (t *TrainingVideo) GetVideoByID() (*models.TrainingVideo, error) {
 }
 
 func (t *TrainingVideo) Get() ([]*models.TrainingVideo, error) {
-	videos, err := models.GetTrainingVideos(1)
+	videos, err := models.GetTrainingVideos()
 	if err != nil {
 		return nil, err
 	}

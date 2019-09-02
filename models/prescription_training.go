@@ -7,7 +7,7 @@ import (
 type RPrescriptionTraining struct {
 	Model
 	PrescriptionID int `json:"prescription_id"`
-	TrainingID        int `json:"training_id"`
+	TrainingID     int `json:"training_id"`
 }
 
 func ExistRPrescriptionTrainingByID(id int) (bool, error) {
@@ -37,7 +37,7 @@ func GetPrescriptionTrainings(prescriptionID int) ([]*RPrescriptionTraining, err
 func AddRPrescriptionTraining(data map[string]interface{}) error {
 	p := RPrescriptionTraining{
 		PrescriptionID: data["prescription_id"].(int),
-		TrainingID:        data["training_id"].(int),
+		TrainingID:     data["training_id"].(int),
 	}
 
 	if err := db.Create(&p).Error; err != nil {

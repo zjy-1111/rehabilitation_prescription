@@ -55,7 +55,7 @@ func AdminLogin(c *gin.Context) {
 	}
 
 	app.Response(c, http.StatusOK, e.SUCCESS, map[string]string{
-		"uid": strconv.Itoa(uid),
+		"uid":   strconv.Itoa(uid),
 		"token": token,
 	})
 }
@@ -101,9 +101,8 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
-
 	app.Response(c, http.StatusOK, e.SUCCESS, map[string]string{
-		"uid": strconv.Itoa(uid),
+		"uid":   strconv.Itoa(uid),
 		"token": token,
 	})
 }

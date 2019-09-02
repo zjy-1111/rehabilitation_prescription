@@ -5,17 +5,17 @@ import (
 )
 
 type User struct {
-	ID       int
-	Username string
-	Password string
-	UserType string
-	Name     string
-	Avatar   string
-	Sex string
-	Age int
+	ID          int
+	Username    string
+	Password    string
+	UserType    string
+	Name        string
+	Avatar      string
+	Sex         string
+	Age         int
 	Description string
 
-	PageNum int
+	PageNum  int
 	PageSize int
 }
 

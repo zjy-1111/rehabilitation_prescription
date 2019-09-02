@@ -104,4 +104,3 @@ func UploadVideo(c *gin.Context) {
 		//"duration": strconv.FormatFloat(duration, 'f', 2, 64),
 	})
 }
-

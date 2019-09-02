@@ -9,7 +9,7 @@ type Prescription struct {
 
 	Title     string `json:"title"`
 	PatientID int    `json:"patient_id"`
-	Desc string `json:"desc"`
+	Desc      string `json:"desc"`
 	//Name      string `json:"name"`
 	//Sex       string `json:"sex"`
 	//Age       int    `json:"age"`
@@ -43,7 +43,7 @@ func AddPrescription(data map[string]interface{}, trainingIDList []int) error {
 	p := Prescription{
 		Title:     data["title"].(string),
 		PatientID: data["patient_id"].(int),
-		Desc: data["desc"].(string),
+		Desc:      data["desc"].(string),
 		//Name:      data["name"].(string),
 		//Sex:       data["sex"].(string),
 		//Age:       data["age"].(int),
@@ -55,9 +55,9 @@ func AddPrescription(data map[string]interface{}, trainingIDList []int) error {
 
 	// 添加training和prescription的关系
 	for _, id := range trainingIDList {
-		data := map[string]interface{} {
+		data := map[string]interface{}{
 			"prescription_id": p.ID,
-			"training_id": id,
+			"training_id":     id,
 		}
 		AddRPrescriptionTraining(data)
 	}

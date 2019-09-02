@@ -5,7 +5,7 @@ import "rehabilitation_prescription/models"
 type RPrescriptionTraining struct {
 	ID             int
 	PrescriptionID int
-	TrainingID        int
+	TrainingID     int
 
 	CreatedOn  int
 	ModifiedOn int
@@ -18,7 +18,7 @@ type RPrescriptionTraining struct {
 func (p *RPrescriptionTraining) Add() error {
 	training := map[string]interface{}{
 		"prescription_id": p.PrescriptionID,
-		"training_id":        p.TrainingID,
+		"training_id":     p.TrainingID,
 	}
 
 	if err := models.AddRPrescriptionTraining(training); err != nil {
@@ -31,7 +31,7 @@ func (p *RPrescriptionTraining) Add() error {
 func (p *RPrescriptionTraining) Edit() error {
 	return models.EditRPrescriptionTraining(p.ID, map[string]interface{}{
 		"prescription_id": p.PrescriptionID,
-		"training_id":        p.TrainingID,
+		"training_id":     p.TrainingID,
 	})
 }
 

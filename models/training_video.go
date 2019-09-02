@@ -8,11 +8,11 @@ type TrainingVideo struct {
 	Model
 
 	Title       string `json:"title"`
-	Description string `json:"description"`
+	Description string `json:"desc"`
 	VideoUrl    string `json:"video_url"`
 	CoverUrl    string `json:"cover_url"`
 	Duration    int    `json:"duration"`
-	CreatedBy string `json:"created_by"`
+	CreatedBy   string `json:"created_by"`
 }
 
 func ExistTrainingVideoByID(id int) (bool, error) {
@@ -39,9 +39,9 @@ func GetTrainingVideo(id int) (*TrainingVideo, error) {
 	return &t, nil
 }
 
-func GetTrainingVideos(id int) ([]*TrainingVideo, error) {
+func GetTrainingVideos() ([]*TrainingVideo, error) {
 	var t []*TrainingVideo
-	err := db.Where("deleted_on = ? AND id = ?", 0, id).Find(&t).Error
+	err := db.Where("deleted_on = ?", 0).Find(&t).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}

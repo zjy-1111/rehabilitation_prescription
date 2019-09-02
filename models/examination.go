@@ -26,11 +26,15 @@ func AddExaminationInfo(data map[string]interface{}) error {
 		Weight:        data["weight"].(int),
 		BloodPressure: data["blood_pressure"].(int),
 	}
-	if err := db.Create(&ex).Error; err != nil {return err}
+	if err := db.Create(&ex).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
 func DelExamination(id int) error {
-	if err := db.Where("id = ?", id).Delete(&Examination{}).Error; err != nil { return err }
+	if err := db.Where("id = ?", id).Delete(&Examination{}).Error; err != nil {
+		return err
+	}
 	return nil
 }

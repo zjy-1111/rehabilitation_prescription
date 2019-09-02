@@ -19,7 +19,10 @@ type ExaminationListParams struct {
 func GetExaminationList(c *gin.Context) {
 	var params ExaminationListParams
 	httpCode, errCode := app.BindAndValid(c, &params)
-	if errCode != e.SUCCESS { app.Response(c, httpCode, errCode, nil); return }
+	if errCode != e.SUCCESS {
+		app.Response(c, httpCode, errCode, nil)
+		return
+	}
 
 	s := &services.Examination{PageNum: util.GetPage(c), PageSize: setting.AppSetting.PageSize, PatientID: params.PatientID}
 	exList, err := s.Get()
@@ -35,24 +38,30 @@ func GetExaminationList(c *gin.Context) {
 }
 
 type ExaminationForm struct {
-	PatientID int `form:"patient_id" valid:"Required;Min(1)"`
-	Height int `form:"height" valid:"Required;Min(50);Max(250)"`
-	Weight int `form:"weight" valid:"Required;Min(1);"`
+	PatientID     int `form:"patient_id" valid:"Required;Min(1)"`
+	Height        int `form:"height" valid:"Required;Min(50);Max(250)"`
+	Weight        int `form:"weight" valid:"Required;Min(1);"`
 	BloodPressure int `form:"blood_pressure" valid:"Required;Min(1)"`
 }
 
 func AddExamination(c *gin.Context) {
 	var form ExaminationForm
 	httpCode, errCode := app.BindAndValid(c, &form)
-	if errCode != e.SUCCESS { app.Response(c, httpCode, errCode, nil); return }
+	if errCode != e.SUCCESS {
+		app.Response(c, httpCode, errCode, nil)
+		return
+	}
 
 	s := &services.Examination{
-		PatientID: form.PatientID,
-		Height: form.Height,
-		Weight: form.Weight,
+		PatientID:     form.PatientID,
+		Height:        form.Height,
+		Weight:        form.Weight,
 		BloodPressure: form.BloodPressure,
 	}
-	if err := s.Add(); err != nil { app.Response(c, http.StatusInternalServerError, e.ERROR_ADD_EXAMINATION_FAIL, nil); return }
+	if err := s.Add(); err != nil {
+		app.Response(c, http.StatusInternalServerError, e.ERROR_ADD_EXAMINATION_FAIL, nil)
+		return
+	}
 
 	app.Response(c, http.StatusOK, e.SUCCESS, nil)
 }
@@ -67,8 +76,11 @@ func DelExamination(c *gin.Context) {
 		return
 	}
 
-	s := &services.Examination{ ID: id }
-	if err := s.Del(); err != nil { app.Response(c, http.StatusInternalServerError, e.ERROR_DELETE_EXAMINATION_FAIL, nil); return }
+	s := &services.Examination{ID: id}
+	if err := s.Del(); err != nil {
+		app.Response(c, http.StatusInternalServerError, e.ERROR_DELETE_EXAMINATION_FAIL, nil)
+		return
+	}
 
 	app.Response(c, http.StatusOK, e.SUCCESS, nil)
 }

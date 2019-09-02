@@ -84,7 +84,7 @@ func AddPrescription(c *gin.Context) {
 	s := services.Prescription{
 		Title:          form.Title,
 		PatientID:      form.PatientID,
-		Desc: form.Desc,
+		Desc:           form.Desc,
 		TrainingIDList: trainingIDList,
 	}
 

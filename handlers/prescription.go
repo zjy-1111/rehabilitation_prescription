@@ -14,7 +14,7 @@ type Prescription struct {
 	ID          int         `json:"id"`
 	Title       string      `json:"title"`
 	Desc        string      `json:"desc"`
-	CreatedOn int `json:"created_on"`
+	CreatedOn   int         `json:"created_on"`
 	PatientName string      `json:"patient_name"`
 	Sex         string      `json:"sex"`
 	Age         int         `json:"age"`
@@ -58,7 +58,7 @@ func (h *PrescriptionHandler) GetPrescriptions() ([]*Prescription, error) {
 			ID:          prescriptions[i].ID,
 			Title:       prescriptions[i].Title,
 			Desc:        prescriptions[i].Desc,
-			CreatedOn:  prescriptions[i].CreatedOn,
+			CreatedOn:   prescriptions[i].CreatedOn,
 			PatientName: userInfo.Name,
 			Sex:         userInfo.Sex,
 			Age:         userInfo.Age,

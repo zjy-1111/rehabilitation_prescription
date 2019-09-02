@@ -11,7 +11,6 @@ import (
 	"rehabilitation_prescription/util"
 )
 
-
 // GetFileFullUrl get the full access path
 func GetFileFullURL(name string) string {
 	return "https://" + setting.AppSetting.BucketName + "." + setting.AppSetting.Endpoint + "/" + name

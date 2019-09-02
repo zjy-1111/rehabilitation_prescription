@@ -7,7 +7,7 @@ import (
 type Prescription struct {
 	ID             int
 	Title          string
-	Desc string
+	Desc           string
 	PatientID      int
 	TrainingIDList []int
 	//Name      string
@@ -26,7 +26,7 @@ func (p *Prescription) Add() error {
 	prescription := map[string]interface{}{
 		"title":      p.Title,
 		"patient_id": p.PatientID,
-		"desc": p.Desc,
+		"desc":       p.Desc,
 		//"name":       p.Name,
 		//"sex":        p.Sex,
 		//"age":        p.Age,

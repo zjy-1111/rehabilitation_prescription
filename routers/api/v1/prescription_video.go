@@ -68,7 +68,7 @@ func AddRPrescriptionTraining(c *gin.Context) {
 
 	RPrescriptionTrainingServ := services.RPrescriptionTraining{
 		PrescriptionID: form.PrescriptionID,
-		TrainingID:        form.VideoID,
+		TrainingID:     form.VideoID,
 	}
 
 	if err := RPrescriptionTrainingServ.Add(); err != nil {
@@ -97,7 +97,7 @@ func EditRPrescriptionTraining(c *gin.Context) {
 	RPrescriptionTrainingServ := services.RPrescriptionTraining{
 		ID:             form.ID,
 		PrescriptionID: form.PrescriptionID,
-		TrainingID:        form.VideoID,
+		TrainingID:     form.VideoID,
 	}
 	exists, err := RPrescriptionTrainingServ.ExistByID()
 	if err != nil {

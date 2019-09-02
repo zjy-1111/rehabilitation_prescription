@@ -11,8 +11,8 @@ type Message struct {
 	DeletedOn  int
 
 	MessageTextID int
-	Receiver   string
-	Read int
+	Receiver      string
+	Read          int
 
 	PageNum  int
 	PageSize int
@@ -21,8 +21,8 @@ type Message struct {
 func (m *Message) Add() error {
 	msg := map[string]interface{}{
 		"message_text_id": m.MessageTextID,
-		"receiver": m.Receiver,
-		"read": m.Read,
+		"receiver":        m.Receiver,
+		"read":            m.Read,
 	}
 
 	if err := models.AddMessage(msg); err != nil {
@@ -35,11 +35,10 @@ func (m *Message) Add() error {
 func (m *Message) Edit() error {
 	return models.EditMessage(m.ID, map[string]interface{}{
 		"message_text_id": m.MessageTextID,
-		"receiver": m.Receiver,
-		"read": m.Read,
+		"receiver":        m.Receiver,
+		"read":            m.Read,
 	})
 }
-
 
 func (m *Message) Get() ([]*models.Message, error) {
 	msgs, err := models.GetMessages(m.PageNum, m.PageSize)
@@ -56,16 +55,16 @@ func (m *Message) Del() error {
 
 func (m *Message) Count() (int, error) {
 	return models.GetMessagesTotal(map[string]interface{}{
-		"receiver": m.Receiver,
+		"receiver":   m.Receiver,
 		"deleted_on": 0,
 	})
 }
 
 func (m *Message) UnReadCount() (int, error) {
 	return models.GetMessagesTotal(map[string]interface{}{
-		"receiver": m.Receiver,
+		"receiver":   m.Receiver,
 		"deleted_on": 0,
-		"read": 0,
+		"read":       0,
 	})
 }
 

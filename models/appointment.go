@@ -60,7 +60,6 @@ func GetAllPatients(doctorID int) ([][2]int, error) {
 	return res, nil
 }
 
-
 func AddAppointment(data map[string]interface{}) error {
 	a := RDoctorPatient{
 		PatientID: data["patient_id"].(int),

@@ -33,5 +33,3 @@ func CheckImageSize(f multipart.File) bool {
 
 	return size <= setting.AppSetting.ImageMaxSize
 }
-
-
