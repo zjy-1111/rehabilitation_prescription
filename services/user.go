@@ -49,6 +49,10 @@ func (u *User) GetUsersByType() (users []*models.User, err error) {
 	return users, err
 }
 
+func (u *User) GetDoctorsWithName(name string) (users []*models.User, err error) {
+	return models.GetDoctorsWithName(name, u.PageNum, u.PageSize)
+}
+
 func (u *User) GetUsersTotalByType() (int, error) {
 	return models.GetUsersTotalByType(u.UserType)
 }

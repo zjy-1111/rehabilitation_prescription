@@ -64,6 +64,7 @@ func InitRouter() *gin.Engine {
 	//apiv1.Use(jwt.JWT())
 	{
 		apiv1.GET("/patients", v1.GetPatients)
+		apiv1.GET("/doctors", v1.GetDoctors)
 		apiv1.POST("/appoint", v1.AddAppointment)
 		apiv1.PUT("/appoint/:id", v1.EditAppointment)
 		apiv1.DELETE("/patient/:id", v1.DelAppointment)

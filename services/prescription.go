@@ -8,6 +8,7 @@ type Prescription struct {
 	ID             int
 	Title          string
 	Desc           string
+	DoctorID       int
 	PatientID      int
 	TrainingIDList []int
 	//Name      string
@@ -26,6 +27,7 @@ func (p *Prescription) Add() error {
 	prescription := map[string]interface{}{
 		"title":      p.Title,
 		"patient_id": p.PatientID,
+		"doctor_id":  p.DoctorID,
 		"desc":       p.Desc,
 		//"name":       p.Name,
 		//"sex":        p.Sex,

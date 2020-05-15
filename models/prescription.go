@@ -9,6 +9,7 @@ type Prescription struct {
 
 	Title     string `json:"title"`
 	PatientID int    `json:"patient_id"`
+	DoctorID  int    `json:"doctor_id"`
 	Desc      string `json:"desc"`
 	//Name      string `json:"name"`
 	//Sex       string `json:"sex"`
@@ -39,10 +40,21 @@ func GetPatientPrescriptions(pageNum, pageSize, patientID int) ([]*Prescription,
 	return ps, nil
 }
 
+func GetDoctorPrescriptions(pageNum, pageSize, doctorID int) ([]*Prescription, error) {
+	var ps []*Prescription
+	err := db.Where("doctor_id = ? AND deleted_on = ?", doctorID, 0).Order("created_on DESC").Offset(pageNum).Limit(pageSize).Find(&ps).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return ps, nil
+}
+
 func AddPrescription(data map[string]interface{}, trainingIDList []int) error {
 	p := Prescription{
 		Title:     data["title"].(string),
 		PatientID: data["patient_id"].(int),
+		DoctorID:  data["doctor_id"].(int),
 		Desc:      data["desc"].(string),
 		//Name:      data["name"].(string),
 		//Sex:       data["sex"].(string),

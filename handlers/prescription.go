@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"rehabilitation_prescription/models"
+	"rehabilitation_prescription/pkg/logging"
 )
 
 type PrescriptionHandler struct {
+	DoctorID  int
 	PatientID int
 	Offset    int
 	Limit     int
@@ -31,8 +33,9 @@ type Training struct {
 	CreatedOn int    `json:"created_on"`
 }
 
-func NewPrescriptionHandler(patientID, offset, limit int) *PrescriptionHandler {
+func NewPrescriptionHandler(doctorID, patientID, offset, limit int) *PrescriptionHandler {
 	return &PrescriptionHandler{
+		DoctorID:  doctorID,
 		PatientID: patientID,
 		Offset:    offset,
 		Limit:     limit,
@@ -40,6 +43,13 @@ func NewPrescriptionHandler(patientID, offset, limit int) *PrescriptionHandler {
 }
 
 func (h *PrescriptionHandler) GetPrescriptions() ([]*Prescription, error) {
+	if h.DoctorID != 0 {
+		return h.GetHistoryPrescriptions()
+	}
+	return h.GetPatientPrescriptions()
+}
+
+func (h *PrescriptionHandler) GetPatientPrescriptions() ([]*Prescription, error) {
 	// 用户信息
 	userInfo, err := models.GetUserByID(h.PatientID)
 	if err != nil {
@@ -62,34 +72,37 @@ func (h *PrescriptionHandler) GetPrescriptions() ([]*Prescription, error) {
 			PatientName: userInfo.Name,
 			Sex:         userInfo.Sex,
 			Age:         userInfo.Age,
-			Trainings:   h.getTrainings(prescriptions[i].ID),
+			Trainings:   getTrainings(prescriptions[i].ID),
 		}
 	}
 
 	return ps, nil
 }
 
-// 根据处方id获取运动处方信息（多条）
-func (h *PrescriptionHandler) getTrainings(prescriptionID int) []*Training {
-	prescriptionTrainings, _ := models.GetPrescriptionTrainings(prescriptionID)
-
-	trainings := make([]*Training, 0)
-	for i := 0; i < len(prescriptionTrainings); i++ {
-		trainingInfo, err := models.GetTrainingVideo(prescriptionTrainings[i].TrainingID)
-		if err != nil {
-			continue
-		}
-		training := &Training{
-			ID:        trainingInfo.ID,
-			Title:     trainingInfo.Title,
-			Desc:      trainingInfo.Description,
-			VideoUrl:  trainingInfo.VideoUrl,
-			CoverUrl:  trainingInfo.CoverUrl,
-			Author:    trainingInfo.CreatedBy,
-			CreatedOn: trainingInfo.CreatedOn,
-		}
-		trainings = append(trainings, training)
+func (h *PrescriptionHandler) GetHistoryPrescriptions() ([]*Prescription, error) {
+	prescriptions, err := models.GetDoctorPrescriptions(h.Offset, h.Limit, h.DoctorID)
+	if err != nil {
+		return nil, err
 	}
 
-	return trainings
+	ps := make([]*Prescription, len(prescriptions))
+	for i := 0; i < len(prescriptions); i++ {
+		userInfo, err := models.GetUserByID(prescriptions[i].PatientID)
+		if err != nil {
+			logging.Error("get userInfo failed, error: %v", err)
+			continue
+		}
+		ps[i] = &Prescription{
+			ID:          prescriptions[i].ID,
+			Title:       prescriptions[i].Title,
+			Desc:        prescriptions[i].Desc,
+			CreatedOn:   prescriptions[i].CreatedOn,
+			PatientName: userInfo.Name,
+			Sex:         userInfo.Sex,
+			Age:         userInfo.Age,
+			Trainings:   getTrainings(prescriptions[i].ID),
+		}
+	}
+
+	return ps, err
 }

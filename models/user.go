@@ -8,8 +8,9 @@ type User struct {
 	Model
 	Username    string `json:"username"`
 	Password    string `json:"password"`
-	UserType    string `json:"user_type"`
 	Name        string `json:"name"`
+	UserType    string `json:"user_type"`
+	Phone       string `json:"phone"`
 	Avatar      string `json:"avatar"`
 	Sex         string `json:"sex"`
 	Age         int    `json:"age"`
@@ -19,7 +20,7 @@ type User struct {
 // CheckUser checks if uentication information exists
 func CheckUser(username, password, userType string) (int, bool, error) {
 	var u User
-	err := db.Select("id").Where(User{Username: username, Password: password, UserType: userType}).First(&u).Error
+	err := db.Select("id").Where(User{Phone: username, Password: password, UserType: userType}).First(&u).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return 0, false, err
 	}
@@ -72,6 +73,20 @@ func GetUserByID(id int) (User, error) {
 func GetUsersByType(userType string, pageNum, pageSize int) ([]*User, error) {
 	var users []*User
 	err := db.Where("deleted_on = ? AND user_type = ?", 0, userType).Offset(pageNum).Limit(pageSize).Find(&users).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	return users, nil
+}
+
+func GetDoctorsWithName(name string, pageNum, pageSize int) ([]*User, error) {
+	var users []*User
+	var err error
+	if name == "" {
+		err = db.Where("user_type = ? AND deleted_on = ?", "2", 0).Offset(pageNum).Limit(pageSize).Find(&users).Error
+	} else {
+		err = db.Where("name = ? AND user_type = ? AND deleted_on = ?", name, 2, 0).Offset(pageNum).Limit(pageSize).Find(&users).Error
+	}
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}

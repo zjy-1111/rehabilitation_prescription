@@ -19,6 +19,7 @@ import (
 type Query struct {
 	DoctorID    int    `form:"doctor_id"`
 	PatientName string `form:"patient_name"`
+	DoctorName  string `form:"doctor_name"`
 }
 
 // @summary 病人列表
@@ -37,12 +38,6 @@ func GetPatients(c *gin.Context) {
 		return
 	}
 
-	//authService := services.User{
-	//	ID:       doctorID,
-	//	UserType: "2",
-	//}
-	//checkValidAuth(c, authService)
-
 	h := handlers.NewPatientsHandler(q.DoctorID, util.GetPage(c), setting.AppSetting.PageSize)
 
 	patients, err := h.GetPatients(q.PatientName)
@@ -54,6 +49,41 @@ func GetPatients(c *gin.Context) {
 	data := make(map[string]interface{})
 	data["items"] = patients
 	data["total"] = len(patients)
+	app.Response(c, http.StatusOK, e.SUCCESS, data)
+}
+
+// @summary 病人列表
+// @accept json
+// @produce json
+// @param doctor_id query int true "医生id"
+// @param page query int true "分页"
+// @param patient_name string false "按病人名称查询"
+// @success 200 {object} models.Response
+// @router api/v1/patients [get]
+func GetDoctors(c *gin.Context) {
+	var q Query
+	httpCode, errCode := app.BindAndValid(c, &q)
+	if errCode != e.SUCCESS {
+		app.Response(c, httpCode, errCode, nil)
+		return
+	}
+
+	s := services.User{
+		UserType: "2",
+		Name:     q.DoctorName,
+		PageNum:  util.GetPage(c),
+		PageSize: setting.AppSetting.PageSize,
+	}
+
+	doctors, err := s.GetDoctorsWithName(q.DoctorName)
+	if err != nil {
+		app.Response(c, http.StatusInternalServerError, e.ERROR, nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["items"] = doctors
+	data["total"] = len(doctors)
 	app.Response(c, http.StatusOK, e.SUCCESS, data)
 }
 

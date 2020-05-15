@@ -18,7 +18,6 @@ type UserForm struct {
 	Username string `form:"username" valid:"Required;MaxSize(100)"`
 	Password string `form:"password" valid:"Required;MaxSize(100)"`
 	UserType string `form:"user_type" valid:"MaxSize(10)"`
-	Name     string `form:"name" valid:"MaxSize(100)"`
 	Avatar   string `form:"avatar" valid:"MaxSize(255)"`
 }
 
@@ -168,7 +167,6 @@ func AddUser(c *gin.Context) {
 		Username: form.Username,
 		Password: form.Password,
 		UserType: form.UserType,
-		Name:     form.Name,
 		Avatar:   form.Avatar,
 	}
 
@@ -212,7 +210,6 @@ func EditUser(c *gin.Context) {
 		ID:       com.StrTo(c.Param("id")).MustInt(),
 		Username: form.Username,
 		Password: form.Password,
-		Name:     form.Name,
 		Avatar:   form.Avatar,
 	}
 
